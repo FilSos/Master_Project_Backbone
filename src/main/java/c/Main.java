@@ -10,19 +10,24 @@ import java.util.Objects;
 
 public class Main {
 
-    public void btnEmpClick() throws Exception{
-        System.out.println("BtnEmplClick");
-        Stage primaryStage=new Stage();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("empl.fxml")));
-        primaryStage.setTitle("Employees - Departements Management System");
-        primaryStage.setMaximized(true);
-        primaryStage.setScene(new Scene(root));
-        primaryStage.initModality(Modality.APPLICATION_MODAL);
-        primaryStage.show();
+//    public void btnEmpClick() throws Exception{
+//        System.out.println("BtnEmplClick");
+//        Stage primaryStage=new Stage();
+//        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("empl.fxml")));
+//        primaryStage.setTitle("Employees - Departements Management System");
+//        primaryStage.setMaximized(true);
+//        primaryStage.setScene(new Scene(root));
+//        primaryStage.initModality(Modality.APPLICATION_MODAL);
+//        primaryStage.show();
+//    }
+
+    public void btnAddBaseClick(){
+        System.out.println("Dodaj baze");
+
     }
 
-    public void btnDeptClick(){
-        System.out.println("btnDeptClick");
+    public void btnProgramStartClick() {
+        System.out.println("Wystartuj program");
     }
 
 }

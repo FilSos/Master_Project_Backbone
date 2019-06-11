@@ -47,10 +47,10 @@ public class Empl implements Initializable {
         new Thread(()->{
 
 
-        //System.out.println(getClass().getResource("../v/EmplStyle.css").toExternalForm());
+        //System.out.println(getClass().getResource("../v/style.css").toExternalForm());
 
             Platform.runLater(()->{
-                emplTv.getParent().getStylesheets().add(getClass().getResource("EmplStyle.css").toExternalForm());
+                emplTv.getParent().getStylesheets().add(getClass().getResource("style.css").toExternalForm());
                 emplTv.setVisible(true);
                 Label l=new Label("Loading...");
                 l.setFont(new Font("Arial",35.0));

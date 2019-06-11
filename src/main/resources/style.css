@@ -9,15 +9,16 @@
     -fx-text-fill: #FFFFFF;
 }
 .scene{
-    -fx-background-image: url("background1.jpg");
+    -fx-background-image: url("test4.jpg");
+    -fx-background-size: 100% 100%;
 }
 .btn{
-    -fx-background-color: coral;
+    -fx-background-color: teal;
     -fx-text-fill: #FFFFFF;
-    -fx-font-size: 25px;
+    -fx-font-size: 18px;
 }
 .btn:pressed{
-    -fx-background-color: #EE6E40;
+    -fx-background-color: purple;
 }
 .btn:hover{
     -fx-cursor: hand;
