@@ -24,11 +24,10 @@ public class Main {
 
     public void btnAddBaseClick() throws IOException {
         System.out.println("Dodaj baze");
-        System.out.println("BtnEmplClick");
         Stage primaryStage=new Stage();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("empl.fxml")));
-        primaryStage.setTitle("Employees - Departements Management System");
-        primaryStage.setMaximized(true);
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("base.fxml")));
+        primaryStage.setTitle("Dodaj bazę danych");
+        primaryStage.setMaximized(false);
         primaryStage.setScene(new Scene(root));
         primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
