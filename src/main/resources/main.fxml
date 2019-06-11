@@ -35,9 +35,10 @@
    <children>
       <AnchorPane prefHeight="410.0" prefWidth="277.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
          <children>
-            <Button fx:id="btnAddBase" layoutX="534.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnAddBaseClick" prefHeight="39.0" prefWidth="129.0" styleClass="btn" text="Dodaj bazę" />
-            <Button fx:id="btnProgramStart" layoutX="335.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnProgramStartClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Uruchom program" />
-            <Label layoutX="352.0" layoutY="-38.0" prefHeight="104.0" prefWidth="277.0" text="SQLMinator">
+            <Button fx:id="btnAddBase" layoutX="566.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnAddBaseClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj bazę" />
+            <Button fx:id="btnProgramStart" layoutX="367.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnProgramStartClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Uruchom program" />
+            <Button fx:id="btnAddCSV" layoutX="566.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnAddCSVClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj plik CSV" />
+            <Label layoutX="401.0" layoutY="-37.0" prefHeight="104.0" prefWidth="277.0" text="SQLMinator">
                <font>
                   <Font size="50.0" />
                </font>
@@ -63,7 +64,7 @@
                   </LinearGradient>
                </textFill>
             </Label>
-            <ComboBox layoutX="334.0" layoutY="76.0" prefHeight="39.0" prefWidth="185.0" />
+            <ComboBox layoutX="366.0" layoutY="76.0" prefHeight="39.0" prefWidth="185.0" />
          </children>
       </AnchorPane>
    </children>
