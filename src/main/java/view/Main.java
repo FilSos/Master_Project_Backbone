@@ -1,4 +1,4 @@
-package v;
+package view;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,7 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("main.fxml")));
-        primaryStage.setTitle("SQLMinator - parser for query data");
+        primaryStage.setTitle("SQLminator - parser for query data");
         //primaryStage.setMaximized(true);
         Scene scene=new Scene(root);
         scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());

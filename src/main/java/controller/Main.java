@@ -1,4 +1,4 @@
-package c;
+package controller;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -28,8 +28,10 @@ public class Main {
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("base.fxml")));
         primaryStage.setTitle("Dodaj bazę danych");
         primaryStage.setMaximized(false);
-        primaryStage.setScene(new Scene(root));
-        primaryStage.initModality(Modality.APPLICATION_MODAL);
+        Scene scene=new Scene(root);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+        primaryStage.setScene(scene);
+       // primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
     }
 

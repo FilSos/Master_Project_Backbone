@@ -1,7 +1,7 @@
-import m.Dept;
-import m.DeptOperations;
-import m.Empl;
-import m.EmplOperations;
+import model.Dept;
+import model.DeptOperations;
+import model.Empl;
+import model.EmplOperations;
 
 public class Main {
 

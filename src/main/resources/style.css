@@ -12,6 +12,10 @@
     -fx-background-image: url("test4.jpg");
     -fx-background-size: 100% 100%;
 }
+.scene_2{
+    -fx-background-image: url("test.jpg");
+    -fx-background-size: 100% 100%;
+}
 .btn{
     -fx-background-color: teal;
     -fx-text-fill: #FFFFFF;
@@ -22,4 +26,12 @@
 }
 .btn:hover{
     -fx-cursor: hand;
+}
+
+.txt{
+-fx-width: 20%;
+  -fx-padding: 12px 20px;
+  -fx-margin: 8px 0;
+  -fx-display: inline-block;
+  -fx-border-radius: 4px;
 }

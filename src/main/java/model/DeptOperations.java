@@ -1,42 +1,39 @@
-package m;
+package model;
 
-import c.HibernateUtil;
+import controller.HibernateUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 import java.util.List;
 
-public class EmplOperations {
+public class DeptOperations {
 
-
-    public void add(Empl empl){
+    public void add(Dept dept){
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.save(empl);
+        session.save(dept);
         session.getTransaction().commit();
     }
 
-    public void update(Empl empl){
+    public void update(Dept dept){
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.update(empl);
+        session.update(dept);
         session.getTransaction().commit();
     }
 
-    public void delete(Empl empl){
+    public void delete(Dept dept){
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.delete(empl);
+        session.delete(dept);
         session.getTransaction().commit();
     }
 
-
-    public List<Empl> getAll(){
+    public List getAll(){
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("from Empl");
+        Query query = session.createQuery("from Dept");
         return query.list();
     }
-
 
 }

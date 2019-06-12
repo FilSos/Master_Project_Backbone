@@ -1,4 +1,4 @@
-package c;
+package controller;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -18,8 +18,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import m.Dept;
-import m.EmplOperations;
+import model.Dept;
+import model.EmplOperations;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,7 +32,7 @@ public class Empl implements Initializable {
     @FXML
     public Button btnUpdateEmpl;
 
-    public static m.Empl employeeToUpdate;
+    public static model.Empl employeeToUpdate;
 
     public static String addOrEdit;
 
@@ -47,7 +47,7 @@ public class Empl implements Initializable {
         new Thread(()->{
 
 
-        //System.out.println(getClass().getResource("../v/style.css").toExternalForm());
+        //System.out.println(getClass().getResource("../view/style.css").toExternalForm());
 
             Platform.runLater(()->{
                 emplTv.getParent().getStylesheets().add(getClass().getResource("style.css").toExternalForm());
@@ -70,7 +70,7 @@ public class Empl implements Initializable {
                     public void handle(MouseEvent event) {
                         System.out.println(emplTv.getSelectionModel().getSelectedIndex());
 
-                        System.out.println(((m.Empl)emplTv.getSelectionModel().getSelectedItem()).getFname());
+                        System.out.println(((model.Empl)emplTv.getSelectionModel().getSelectedItem()).getFname());
                     }
                 });
             });
@@ -78,19 +78,19 @@ public class Empl implements Initializable {
 
 
 
-        ObservableList<m.Empl> data = FXCollections.observableArrayList();
+        ObservableList<model.Empl> data = FXCollections.observableArrayList();
         EmplOperations emplOperations=new EmplOperations();
 
         data.addAll(emplOperations.getAll());
 
-//        for (m.Empl e:emplOperations.getAll()) {
+//        for (model.Empl e:emplOperations.getAll()) {
 //            System.out.println(e.getId());
 //        }
 
-        cId.setCellValueFactory(new PropertyValueFactory<m.Empl,Integer>("id"));
-        cFname.setCellValueFactory(new PropertyValueFactory<m.Empl,String>("fname"));
-        cLname.setCellValueFactory(new PropertyValueFactory<m.Empl,String>("lname"));
-//        cIdDept.setCellValueFactory(new PropertyValueFactory<m.Empl, Dept>("dept"));
+        cId.setCellValueFactory(new PropertyValueFactory<model.Empl,Integer>("id"));
+        cFname.setCellValueFactory(new PropertyValueFactory<model.Empl,String>("fname"));
+        cLname.setCellValueFactory(new PropertyValueFactory<model.Empl,String>("lname"));
+//        cIdDept.setCellValueFactory(new PropertyValueFactory<model.Empl, Dept>("dept"));
 
             Platform.runLater(()->{
                 emplTv.setItems(data);
@@ -98,8 +98,8 @@ public class Empl implements Initializable {
                 TableColumn cIdDeptId=new TableColumn("ID");
                 TableColumn cIdDeptLabel=new TableColumn("Label");
                 cIdDept.getColumns().addAll(cIdDeptId,cIdDeptLabel);
-                cIdDeptId.setCellValueFactory(new PropertyValueFactory<m.Empl, Dept>("id_dept"));
-                cIdDeptLabel.setCellValueFactory(new PropertyValueFactory<m.Empl, Dept>("label_dept"));
+                cIdDeptId.setCellValueFactory(new PropertyValueFactory<model.Empl, Dept>("id_dept"));
+                cIdDeptLabel.setCellValueFactory(new PropertyValueFactory<model.Empl, Dept>("label_dept"));
 
 
                 cIdDeptId.setCellFactory(new Callback<TableColumn, TableCell>() {
@@ -123,9 +123,9 @@ public class Empl implements Initializable {
                 emplTv.setRowFactory(new Callback<TableView, TableRow>() {
                     @Override
                     public TableRow call(TableView param) {
-                        return new TableRow<m.Empl>(){
+                        return new TableRow<model.Empl>(){
                             @Override
-                            protected void updateItem(m.Empl item, boolean empty) {
+                            protected void updateItem(model.Empl item, boolean empty) {
                                 super.updateItem(item, empty);
                                 if(empty==true) return;
                                 if (getIndex() % 2==0) {
@@ -166,7 +166,7 @@ public class Empl implements Initializable {
             btnUpdateEmpl.setTooltip(t);
             return ;
         }
-        m.Empl employee = (m.Empl) emplTv.getSelectionModel().getSelectedItem();
+        model.Empl employee = (model.Empl) emplTv.getSelectionModel().getSelectedItem();
         System.out.println("You want to update the employee: ");
         System.out.println("{\n"+employee.getId());
         System.out.println(employee.getFname());

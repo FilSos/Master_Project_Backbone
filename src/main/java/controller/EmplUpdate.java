@@ -1,4 +1,4 @@
-package c;
+package controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,9 +9,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import m.Dept;
-import m.DeptOperations;
-import m.EmplOperations;
+import model.Dept;
+import model.DeptOperations;
+import model.EmplOperations;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,7 +32,7 @@ public class EmplUpdate implements Initializable{
     DeptOperations deptO=new DeptOperations();
     EmplOperations emplO=new EmplOperations();
 
-    private m.Empl previous_empl=Empl.employeeToUpdate;
+    private model.Empl previous_empl=Empl.employeeToUpdate;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -77,7 +77,7 @@ public class EmplUpdate implements Initializable{
     public void emplUpdateOkClick(){
         if(Empl.addOrEdit.equalsIgnoreCase("EDIT")){
 
-//        m.Empl empl=new m.Empl(fname.getText(),lname.getText(),(Dept) dept.getSelectionModel().getSelectedItem());
+//        model.Empl empl=new model.Empl(fname.getText(),lname.getText(),(Dept) dept.getSelectionModel().getSelectedItem());
 //        empl.setId(Integer.parseInt(id.getText()));
         Empl.employeeToUpdate.setFname(fname.getText());
         Empl.employeeToUpdate.setLname(lname.getText());
@@ -89,7 +89,7 @@ public class EmplUpdate implements Initializable{
         Empl.emplTv.setItems(data);
         Empl.primaryStage.close();
         }else if(Empl.addOrEdit.equalsIgnoreCase("ADD")){
-            m.Empl empl=new m.Empl(fname.getText().toString(),lname.getText().toString(),(Dept)dept.getSelectionModel().getSelectedItem());
+            model.Empl empl=new model.Empl(fname.getText().toString(),lname.getText().toString(),(Dept)dept.getSelectionModel().getSelectedItem());
             emplO.add(empl);
             ObservableList data = FXCollections.observableArrayList();
             data.addAll(emplO.getAll());

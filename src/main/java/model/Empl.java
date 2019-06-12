@@ -1,4 +1,4 @@
-package m;
+package model;
 
 public class Empl {
 

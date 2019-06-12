@@ -1,4 +1,4 @@
-package m;
+package model;
 
 import java.util.Set;
 

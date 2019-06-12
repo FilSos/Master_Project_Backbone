@@ -15,7 +15,7 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
-<GridPane alignment="CENTER" prefHeight="549.0" prefWidth="941.0" styleClass="scene" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="c.Main">
+<GridPane alignment="CENTER" prefHeight="549.0" prefWidth="941.0" styleClass="scene" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Main">
    <columnConstraints>
       <ColumnConstraints />
       <ColumnConstraints />
@@ -38,7 +38,7 @@
             <Button fx:id="btnAddBase" layoutX="566.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnAddBaseClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj bazę" />
             <Button fx:id="btnProgramStart" layoutX="367.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnProgramStartClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Uruchom program" />
             <Button fx:id="btnAddCSV" layoutX="566.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnAddCSVClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj plik CSV" />
-            <Label layoutX="401.0" layoutY="-37.0" prefHeight="104.0" prefWidth="277.0" text="SQLMinator">
+            <Label layoutX="401.0" layoutY="-37.0" prefHeight="104.0" prefWidth="277.0" text="SQLminator">
                <font>
                   <Font size="50.0" />
                </font>
