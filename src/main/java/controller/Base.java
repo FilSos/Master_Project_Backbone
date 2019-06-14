@@ -1,35 +1,65 @@
 package controller;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 
 public class Base implements Initializable {
 
     @FXML
-    public static TextField driver;
+    public TextField dbName;
     @FXML
-    public static TextField url;
+    public TextField driver;
     @FXML
-    public static TextField username;
+    public TextField url;
     @FXML
-    public static TextField password;
+    public TextField username;
     @FXML
-    public static Button btnSave;
+    public TextField password;
+    @FXML
+    public Button btnSave;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btnSave.setDisable(true);
+        btnSave.setDisable(false);
     }
+
     @FXML
-    public void btnSaveClick(){
+    public void btnSaveClick() {
         System.out.println("Zapisz dane do bazy");
+        String dbName = this.dbName.getText();
+        String driver = this.driver.getText();
+        String url = this.url.getText();
+        String username = this.username.getText();
+        String password = this.password.getText();
+        System.out.println("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" +
+                "Username: " + username + "\n" + "Password: " + password + "\n" + "Driver: " + driver);
+        try (OutputStream output = new FileOutputStream( "src/main/resources/" + dbName + "_config")) {
+            Properties prop = new Properties();
+            prop.setProperty("db.name", dbName);
+            prop.setProperty("db.driver", driver);
+            prop.setProperty("db.url", url);
+            prop.setProperty("db.username", username);
+            prop.setProperty("db.password", password);
+
+            prop.store(output, null);
+            System.out.println(prop);
+
+        }catch (IOException io){
+            io.printStackTrace();
+        }
+
         Stage stage = (Stage) btnSave.getScene().getWindow();
         stage.close();
     }

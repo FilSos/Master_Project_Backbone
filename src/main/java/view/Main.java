@@ -1,10 +1,13 @@
 package view;
 import javafx.application.Application;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.Objects;
 
 public class Main extends Application {
@@ -12,6 +15,9 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+    @FXML
+    private ObservableList<File> dbTypes;
 
     @Override
     public void start(Stage primaryStage) throws Exception{

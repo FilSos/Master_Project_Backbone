@@ -6,28 +6,34 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" styleClass="scene_2" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Base">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="600.0" styleClass="scene_2" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Base">
    <children>
-      <TextField layoutX="13.0" layoutY="54.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
-      <TextField layoutX="13.0" layoutY="148.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
-      <TextField layoutX="13.0" layoutY="241.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
-      <TextField layoutX="13.0" layoutY="332.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
-      <Button fx:id="btnSave"  layoutX="439.0" layoutY="332.0" mnemonicParsing="false" onAction="#btnSaveClick" styleClass="btn" text="Zapisz" />
-      <Label layoutX="14.0" layoutY="14.0" text="Driver" textFill="#0a63a7">
+      <TextField fx:id="driver" layoutX="14.0" layoutY="146.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
+      <TextField fx:id="url" layoutX="14.0" layoutY="240.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
+      <TextField fx:id="username" layoutX="14.0" layoutY="333.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
+      <TextField fx:id="password" layoutX="14.0" layoutY="424.0" prefHeight="39.0" prefWidth="358.0" styleClass="txt" />
+      <Button fx:id="btnSave" layoutX="440.0" layoutY="424.0" mnemonicParsing="false" onAction="#btnSaveClick" styleClass="btn" text="Zapisz" />
+      <Label layoutX="15.0" layoutY="106.0" text="Driver" textFill="#0a63a7">
          <font>
             <Font name="System Bold" size="19.0" />
          </font></Label>
-      <Label layoutX="17.0" layoutY="109.0" text="URL" textFill="#0a63a7">
+      <Label layoutX="18.0" layoutY="201.0" text="URL" textFill="#0a63a7">
          <font>
             <Font name="System Bold" size="19.0" />
          </font></Label>
-      <Label layoutX="16.0" layoutY="200.0" text="Username" textFill="#0a63a7">
+      <Label layoutX="17.0" layoutY="292.0" text="Username" textFill="#0a63a7">
          <font>
             <Font name="System Bold" size="19.0" />
          </font></Label>
-      <Label layoutX="18.0" layoutY="291.0" text="Password" textFill="#0a63a7">
+      <Label layoutX="19.0" layoutY="383.0" text="Password" textFill="#0a63a7">
          <font>
             <Font name="System Bold" size="19.0" />
          </font></Label>
+      <TextField fx:id="dbName" layoutX="14.0" layoutY="56.0" prefHeight="39.0" prefWidth="358.0" />
+      <Label layoutX="12.0" layoutY="14.0" text="Database name" textFill="#0a63a7">
+         <font>
+            <Font name="System Bold" size="19.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
