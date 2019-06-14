@@ -38,6 +38,7 @@
             <Button fx:id="btnAddBase" layoutX="566.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnAddBaseClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj bazę" />
             <Button fx:id="btnProgramStart" layoutX="367.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnProgramStartClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Uruchom program" />
             <Button fx:id="btnAddCSV" layoutX="566.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnAddCSVClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj plik CSV" />
+            <ComboBox fx:id="baseSelect" layoutX="366.0" layoutY="76.0" prefHeight="39.0" prefWidth="185.0" />
             <Label layoutX="401.0" layoutY="-37.0" prefHeight="104.0" prefWidth="277.0" text="SQLminator">
                <font>
                   <Font size="50.0" />
@@ -64,7 +65,6 @@
                   </LinearGradient>
                </textFill>
             </Label>
-            <ComboBox layoutX="366.0" layoutY="76.0" prefHeight="39.0" prefWidth="185.0" />
          </children>
       </AnchorPane>
    </children>

@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -17,7 +18,7 @@ public class Main extends Application {
     }
 
     @FXML
-    private ObservableList<File> dbTypes;
+    private ComboBox<File> baseSelect = new ComboBox<>();;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -29,4 +30,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+
 }
