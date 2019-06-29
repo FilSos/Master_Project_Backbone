@@ -7,6 +7,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.Base;
@@ -19,19 +21,11 @@ import java.util.ResourceBundle;
 
 public class Main implements Initializable {
 
-//    public void btnEmpClick() throws Exception{
-//        System.out.println("BtnEmplClick");
-//        Stage primaryStage=new Stage();
-//        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("empl.fxml")));
-//        primaryStage.setTitle("Employees - Departements Management System");
-//        primaryStage.setMaximized(true);
-//        primaryStage.setScene(new Scene(root));
-//        primaryStage.initModality(Modality.APPLICATION_MODAL);
-//        primaryStage.show();
-//    }
-
     @FXML
     public ComboBox<model.Base> baseList = new ComboBox<>();
+
+    @FXML
+    public TextField csvStatus;
 
     void addDbToCombobox(model.Base base) {
         baseList.getItems().add(base);
@@ -103,6 +97,15 @@ public class Main implements Initializable {
 
     public void btnAddCSVClick() {
         System.out.println("Dodaj plik CSV");
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(null);
+        if (selectedFile != null) {
+            csvStatus.setText("Wybrano: " + selectedFile.getName());
+            System.out.println("Wybrano: " + selectedFile.getName());
+        } else {
+            csvStatus.setText("Nie wybrano żadnego pliku");
+            System.out.println("Nie wybrano żadnego pliku");
+        }
     }
 
 }

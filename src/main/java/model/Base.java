@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 public class Base {
 
     private String name;
