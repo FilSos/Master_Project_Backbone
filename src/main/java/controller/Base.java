@@ -15,6 +15,8 @@ import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import static view.Main.mainController;
+
 
 public class Base implements Initializable {
 
@@ -31,22 +33,9 @@ public class Base implements Initializable {
     @FXML
     public Button btnSave;
 
-    private controller.Main controller;
-//TODO nie robic nowych 'instancji' controllera tylko brac juz istniejace i do nich dodawac nowe wartosci do comboboxa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         btnSave.setDisable(false);
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/main.fxml"));
-        try {
-            loader.load();
-            controller = loader.getController();
-            loader.setController(this);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
     }
 
     @FXML
@@ -65,8 +54,8 @@ public class Base implements Initializable {
         base.setUrl(url);
         base.setUsername(username);
         base.setPassword(password);
-        controller.addDbToCombobox(base);
-        try (OutputStream output = new FileOutputStream( "src/main/resources/" + dbName + "_config")) {
+        mainController.addDbToCombobox(base);
+        try (OutputStream output = new FileOutputStream( "src/main/resources/" + dbName + ".properties")) {
             Properties prop = new Properties();
             prop.setProperty("db.name", dbName);
             prop.setProperty("db.driver", driver);

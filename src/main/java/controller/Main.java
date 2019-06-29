@@ -1,8 +1,5 @@
 package controller;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,19 +7,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.Base;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
-import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class Main implements Initializable {
 
@@ -37,48 +30,12 @@ public class Main implements Initializable {
 //        primaryStage.show();
 //    }
 
-    private ObservableList<ComboLoader.Item> obsItems;
-    //TODO Dynamiczne dodawanie itemow do comboboxa podczas intitializacji: odczytywanie danych z plikow properties i dodawnie odpowiednich pol do obiektu base, dodanie kazdego obiektu base do listy , po czym wczytanie jej do comboboxa
     @FXML
-    public ComboBox<model.Base> baseSelect = new ComboBox<>();
-    private Text textNamePrice = new Text();
-
-//    public Main() {
-//
-//        obsItems = FXCollections.observableArrayList(createItems());
-//    }
-//
-//    private List<ComboLoader.Item> createItems() {
-//        return IntStream.rangeClosed(0, 5)
-//                .mapToObj(i -> "Item " + i)
-//                .map(ComboLoader.Item::new)
-//                .collect(Collectors.toList());
-//    }
-//
-//    //name of this methods corresponds to itemLoader.items in fxml.
-//    //if xml name was itemLoader.a this method should have been
-//    //getA(). A bit odd
-//    public ObservableList<ComboLoader.Item> getItems() {
-//
-//        return obsItems;
-//    }
-//
-//    public static class Item {
-//
-//        private final StringProperty name = new SimpleStringProperty();
-//
-//        public Item(String name) {
-//            this.name.set(name);
-//        }
-//
-//        public final StringProperty nameProperty() {
-//            return name;
-//        }
-//    }
+    public ComboBox<model.Base> baseList = new ComboBox<>();
 
     void addDbToCombobox(model.Base base) {
-        baseSelect.getItems().add(base);
-        ObservableList<Base> items = baseSelect.getItems();
+        baseList.getItems().add(base);
+        ObservableList<Base> items = baseList.getItems();
         for (Base b : items) {
             System.out.println("pokaz:" + b.getName());
         }
@@ -90,7 +47,7 @@ public class Main implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        baseSelect.setConverter(new StringConverter<Base>() {
+        baseList.setConverter(new StringConverter<Base>() {
             @Override
             public String toString(Base object) {
                 return object.getName();
@@ -101,11 +58,30 @@ public class Main implements Initializable {
                 return null;
             }
         });
-//
-//        model.Base base = new model.Base();
-//        base.setUrl("dupa.pl");
-//        base.setName("dupa");
-//        baseSelect.getItems().add(base);
+        File dir = new File("src/main/resources/");
+
+        File[] propertyFiles = dir.listFiles((dir1, name) -> name.endsWith(".properties"));
+        if (propertyFiles != null) {
+            for (File propertyFile : propertyFiles) {
+                FileReader reader;
+                try {
+                    reader = new FileReader(propertyFile);
+                    Properties p = new Properties();
+                    p.load(reader);
+                    model.Base base = new model.Base();
+                    base.setPassword(p.getProperty("db.password"));
+                    base.setUrl(p.getProperty("db.url"));
+                    base.setName(p.getProperty("db.name"));
+                    base.setUsername(p.getProperty("db.username"));
+                    base.setDriver(p.getProperty("db.driver"));
+                    baseList.getItems().add(base);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
     }
 
     public void btnAddBaseClick() throws IOException {
