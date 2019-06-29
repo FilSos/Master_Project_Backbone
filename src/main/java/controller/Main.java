@@ -15,6 +15,7 @@ import model.Base;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -26,6 +27,11 @@ public class Main implements Initializable {
 
     @FXML
     public TextField csvStatus;
+
+    @FXML
+    public TextField startProgramStatus;
+
+    private File queryFile = null;
 
     void addDbToCombobox(model.Base base) {
         baseList.getItems().add(base);
@@ -91,17 +97,26 @@ public class Main implements Initializable {
         primaryStage.show();
     }
 
-    public void btnProgramStartClick() {
+    public void btnProgramStartClick() throws IOException {
         System.out.println("Wystartuj program");
+
+        if (queryFile != null) {
+            Files.lines(queryFile.toPath()).forEach(System.out::println);
+            //logika zajebistosci Pjotera
+        } else {
+            startProgramStatus.setText("Nie wybrano pliku z zapytaniami!");
+        }
     }
 
     public void btnAddCSVClick() {
         System.out.println("Dodaj plik CSV");
         FileChooser fileChooser = new FileChooser();
-        File selectedFile = fileChooser.showOpenDialog(null);
-        if (selectedFile != null) {
-            csvStatus.setText("Wybrano: " + selectedFile.getName());
-            System.out.println("Wybrano: " + selectedFile.getName());
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("txt files", "*.txt"),
+                new FileChooser.ExtensionFilter("csv files", "*.csv"));
+        queryFile = fileChooser.showOpenDialog(null);
+        if (queryFile != null) {
+            csvStatus.setText("Wybrano: " + queryFile.getName());
+            System.out.println("Wybrano: " + queryFile.getName());
         } else {
             csvStatus.setText("Nie wybrano żadnego pliku");
             System.out.println("Nie wybrano żadnego pliku");

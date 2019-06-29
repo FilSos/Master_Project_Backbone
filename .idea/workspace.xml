@@ -3,22 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="f9b1495e-1d07-41c8-b65d-1cd595dd8c51" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/Base.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Base.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/Empl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/controller/EmplUpdate.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/controller/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/controller/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Base.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/Base.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Dept.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/DeptOperations.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/Empl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/EmplOperations.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/Empl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Dept.hbm.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Empl.hbm.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/empl.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/empl_update.fxml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/main.fxml" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -43,11 +28,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.fxml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.fxml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/main.fxml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="286">
-              <caret line="45" column="38" lean-forward="true" selection-start-line="45" selection-start-column="38" selection-end-line="45" selection-end-column="38" />
+            <state relative-caret-position="265">
+              <caret line="44" column="21" lean-forward="true" selection-start-line="44" selection-start-column="21" selection-end-line="44" selection-end-column="21" />
             </state>
           </provider>
           <provider editor-type-id="JavaFX-Scene-Builder" />
@@ -71,11 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1250">
-              <caret line="90" column="28" selection-start-line="90" selection-start-column="28" selection-end-line="90" selection-end-column="28" />
+            <state relative-caret-position="103">
+              <caret line="101" lean-forward="true" selection-start-line="101" selection-end-line="101" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -219,8 +204,8 @@
         <option value="$PROJECT_DIR$/src/main/java/Main.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/Base.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/Base.java" />
-        <option value="$PROJECT_DIR$/src/main/java/controller/Main.java" />
         <option value="$PROJECT_DIR$/src/main/resources/main.fxml" />
+        <option value="$PROJECT_DIR$/src/main/java/controller/Main.java" />
       </list>
     </option>
   </component>
@@ -234,9 +219,9 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="950" />
-    <option name="width" value="979" />
-    <option name="height" value="1040" />
+    <option name="x" value="952" />
+    <option name="width" value="977" />
+    <option name="height" value="1038" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -527,7 +512,7 @@
       <workItem from="1561356629985" duration="630000" />
       <workItem from="1561815442808" duration="6266000" />
       <workItem from="1561824042057" duration="983000" />
-      <workItem from="1561825304221" duration="184000" />
+      <workItem from="1561825304221" duration="1259000" />
     </task>
     <task id="LOCAL-00001" summary="first commit">
       <created>1559592387914</created>
@@ -599,11 +584,18 @@
       <option name="project" value="LOCAL" />
       <updated>1561822619507</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="- cleaning&#10;- CSV handle logic added">
+      <created>1561825750918</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1561825750918</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="83714000" />
+    <option name="totallyTimeSpent" value="84789000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -629,12 +621,12 @@
       <window_info anchor="right" id="Maven Projects" order="9" />
       <window_info anchor="bottom" id="Database Changes" order="4" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="10" weight="0.32965517" />
-      <window_info anchor="bottom" id="Run" order="4" sideWeight="0.49934897" visible="true" weight="0.13241379" />
+      <window_info active="true" anchor="bottom" id="Run" order="4" sideWeight="0.49934897" visible="true" weight="0.3572414" />
       <window_info anchor="bottom" id="Terminal" order="12" sideWeight="0.49946293" weight="0.27310345" />
       <window_info id="Capture Tool" order="8" />
       <window_info id="Persistence" order="6" side_tool="true" />
       <window_info id="Designer" order="3" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.18164062" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18164062" />
       <window_info anchor="right" id="Database" order="5" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -675,7 +667,8 @@
     <MESSAGE value="-POM update" />
     <MESSAGE value="-combobox logic added" />
     <MESSAGE value="- proper controller object reading added&#10;- dynamic list of existing properties added&#10;- cleaning&#10;- minor bugs fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="- proper controller object reading added&#10;- dynamic list of existing properties added&#10;- cleaning&#10;- minor bugs fixed" />
+    <MESSAGE value="- cleaning&#10;- CSV handle logic added" />
+    <option name="LAST_COMMIT_MESSAGE" value="- cleaning&#10;- CSV handle logic added" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -850,23 +843,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/resources/main.fxml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="265">
+          <caret line="44" column="21" lean-forward="true" selection-start-line="44" selection-start-column="21" selection-end-line="44" selection-end-column="21" />
+        </state>
+      </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/controller/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1250">
-          <caret line="90" column="28" selection-start-line="90" selection-start-column="28" selection-end-line="90" selection-end-column="28" />
+        <state relative-caret-position="103">
+          <caret line="101" lean-forward="true" selection-start-line="101" selection-end-line="101" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/main.fxml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="286">
-          <caret line="45" column="38" lean-forward="true" selection-start-line="45" selection-start-column="38" selection-end-line="45" selection-end-column="38" />
-        </state>
-      </provider>
-      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
   </component>
   <component name="masterDetails">
