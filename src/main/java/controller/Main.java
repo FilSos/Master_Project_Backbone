@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -26,10 +27,10 @@ public class Main implements Initializable {
     public ComboBox<model.Base> baseList = new ComboBox<>();
 
     @FXML
-    public TextField csvStatus;
+    public Label csvStatus;
 
     @FXML
-    public TextField startProgramStatus;
+    public Label startProgramStatus;
 
     private File queryFile = null;
 
@@ -101,6 +102,7 @@ public class Main implements Initializable {
         System.out.println("Wystartuj program");
 
         if (queryFile != null) {
+            startProgramStatus.setText("");
             Files.lines(queryFile.toPath()).forEach(System.out::println);
             //logika zajebistosci Pjotera
         } else {
@@ -108,8 +110,8 @@ public class Main implements Initializable {
         }
     }
 
-    public void btnAddCSVClick() {
-        System.out.println("Dodaj plik CSV");
+    public void btnAddFileClick() {
+        System.out.println("Dodaj plik");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("txt files", "*.txt"),
                 new FileChooser.ExtensionFilter("csv files", "*.csv"));
