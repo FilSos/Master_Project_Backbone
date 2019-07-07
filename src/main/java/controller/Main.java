@@ -8,6 +8,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -33,10 +34,10 @@ public class Main implements Initializable {
     public ComboBox<model.Base> baseList = new ComboBox<>();
 
     @FXML
-    public TextField csvStatus;
+    public Label csvStatus;
 
     @FXML
-    public TextField startProgramStatus;
+    public Label startProgramStatus;
 
     private File queryFile = null;
 
@@ -108,10 +109,10 @@ public class Main implements Initializable {
         System.out.println("Wystartuj program");
 
         if (queryFile != null) {
-            List<QueryData> queries = Files.lines(queryFile.toPath())
+  List<QueryData> queries = Files.lines(queryFile.toPath())
                     .map(this::mapToQueryData)
                     .collect(Collectors.toList());
-            //logika zajebistosci Pjotera
+            startProgramStatus.setText("");
             SqlDissecter sqlDissecter = new SqlDissecter();
             Platform.runLater(() -> sqlDissecter.evaluateQueries(queries));
 
@@ -128,10 +129,8 @@ public class Main implements Initializable {
         return new QueryData(split[1], split[0], false);
     }
 
-
-
-    public void btnAddCSVClick() {
-        System.out.println("Dodaj plik CSV");
+    public void btnAddFileClick() {
+        System.out.println("Dodaj plik");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("txt files", "*.txt"),
                 new FileChooser.ExtensionFilter("csv files", "*.csv"));
