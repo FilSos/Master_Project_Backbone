@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,13 +13,19 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.Base;
+import parser.SqlDissecter;
+import query.QueryData;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class Main implements Initializable {
 
@@ -101,12 +108,27 @@ public class Main implements Initializable {
         System.out.println("Wystartuj program");
 
         if (queryFile != null) {
-            Files.lines(queryFile.toPath()).forEach(System.out::println);
+            List<QueryData> queries = Files.lines(queryFile.toPath())
+                    .map(this::mapToQueryData)
+                    .collect(Collectors.toList());
             //logika zajebistosci Pjotera
+            SqlDissecter sqlDissecter = new SqlDissecter();
+            Platform.runLater(() -> sqlDissecter.evaluateQueries(queries));
+
         } else {
             startProgramStatus.setText("Nie wybrano pliku z zapytaniami!");
         }
     }
+
+    private QueryData mapToQueryData(String string) {
+        String[] split = string.split("\\|");
+        if (split[0].equals("0")) {
+            return new QueryData(split[1], split[0], true);
+        }
+        return new QueryData(split[1], split[0], false);
+    }
+
+
 
     public void btnAddCSVClick() {
         System.out.println("Dodaj plik CSV");
