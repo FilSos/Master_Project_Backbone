@@ -12,8 +12,7 @@ import java.util.List;
 public class QueryExecuter {
 
     public QueryData execute(QueryData queryData) {
-        Session session = HibernateUtil.getSessionFactory()
-                .getCurrentSession();
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         Transaction transaction = session.beginTransaction();
         NativeQuery sqlQuery = session.createSQLQuery(queryData.getQueryString());
         List queryReturns = sqlQuery.list();
