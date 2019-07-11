@@ -13,11 +13,12 @@ public class SqlDissecter {
 
     QueryExecuter queryExecuter = new QueryExecuter();
 
-    public void evaluateQueries(List<QueryData> queries) {
+    public Map<Boolean, List<QueryData>> evaluateQueries(List<QueryData> queries) {
         List<QueryData> validated = validateQueries(queries);
         List<QueryData> executed = executeOnDb(validated);
         executed.addAll(validated.stream().filter(query -> !query.isValid()).collect(Collectors.toList()));
-        printReport(executed);
+        Map<Boolean, List<QueryData>> resultList = printReport(executed);
+        return resultList;
     }
 
     private List<QueryData> executeOnDb(List<QueryData> validated) {
@@ -50,9 +51,8 @@ public class SqlDissecter {
         }
     }
 
-    private void printReport(List<QueryData> queries) {
+    private Map<Boolean, List<QueryData>> printReport(List<QueryData> queries) {
         QueryData referenceResult = queries.stream()
-                .filter(QueryData::isRef)
                 .findFirst()
                 .get();
 
@@ -71,6 +71,7 @@ public class SqlDissecter {
         queries.stream()
                 .filter(queryData -> !queryData.isValid())
                 .forEach(queryData -> System.out.println("Failed to process query: " + queryData.getQueryString() + " it belongs to: " + queryData.getIdentifier()));
+        return collect;
     }
 
 }

@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,7 +8,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -22,10 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Main implements Initializable {
@@ -40,6 +35,8 @@ public class Main implements Initializable {
     public Label startProgramStatus;
 
     private File queryFile = null;
+
+    Map<Boolean, List<QueryData>> resultList;
 
     void addDbToCombobox(model.Base base) {
         baseList.getItems().add(base);
@@ -114,7 +111,7 @@ public class Main implements Initializable {
                     .collect(Collectors.toList());
             startProgramStatus.setText("");
             SqlDissecter sqlDissecter = new SqlDissecter();
-            Platform.runLater(() -> sqlDissecter.evaluateQueries(queries));
+            resultList = sqlDissecter.evaluateQueries(queries);
             Stage primaryStage = new Stage();
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("result.fxml")));
             primaryStage.setTitle("Wynik");
