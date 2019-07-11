@@ -109,12 +109,21 @@ public class Main implements Initializable {
         System.out.println("Wystartuj program");
 
         if (queryFile != null) {
-  List<QueryData> queries = Files.lines(queryFile.toPath())
+            List<QueryData> queries = Files.lines(queryFile.toPath())
                     .map(this::mapToQueryData)
                     .collect(Collectors.toList());
             startProgramStatus.setText("");
             SqlDissecter sqlDissecter = new SqlDissecter();
             Platform.runLater(() -> sqlDissecter.evaluateQueries(queries));
+            Stage primaryStage = new Stage();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("result.fxml")));
+            primaryStage.setTitle("Wynik");
+            primaryStage.setMaximized(false);
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+            primaryStage.setScene(scene);
+            // primaryStage.initModality(Modality.APPLICATION_MODAL);
+            primaryStage.show();
 
         } else {
             startProgramStatus.setText("Nie wybrano pliku z zapytaniami!");
