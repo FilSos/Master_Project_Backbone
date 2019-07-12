@@ -34,9 +34,7 @@ public class Result implements Initializable {
         resultList.getColumns().addAll(index, queryString, typos, result);
         Map<Boolean, List<QueryData>> resultList = mainController.resultList;
         List<QueryData> list = resultList.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
-        ObservableList<QueryData> items = FXCollections.observableArrayList(
-                list
-        );
+        ObservableList<QueryData> items = FXCollections.observableArrayList(list);
         index.setCellValueFactory(new PropertyValueFactory<QueryData,String>("identifier"));
         queryString.setCellValueFactory(new PropertyValueFactory<QueryData,String>("queryString"));
         typos.setCellValueFactory(new PropertyValueFactory<QueryData,Integer>("typos"));
