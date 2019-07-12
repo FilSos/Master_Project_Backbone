@@ -112,11 +112,11 @@ public class SqlDissecter {
     private List<QueryData> scoreQuery(Map<Boolean, List<QueryData>> queries) {
         List<QueryData> correct = queries.get(true)
                 .stream()
-                .map(query -> QueryData.newBuilder().withScore(100 - (query.getTypos() * 5)).build())
+                .map(query -> QueryData.newBuilder(query).withScore(100 - (query.getTypos() * 5)).build())
                 .collect(Collectors.toList());
         List<QueryData> failed = queries.get(false)
                 .stream()
-                .map(query -> QueryData.newBuilder().withScore(0).build())
+                .map(query -> QueryData.newBuilder(query).withScore(0).build())
                 .collect(Collectors.toList());
 
         correct.addAll(failed);
