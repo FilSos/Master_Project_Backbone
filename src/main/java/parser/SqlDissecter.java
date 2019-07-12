@@ -1,10 +1,14 @@
 package parser;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import query.QueryData;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,12 +47,44 @@ public class SqlDissecter {
                     .withIsValid(true)
                     .build();
         } catch (JSQLParserException e) {
-            query.setValid(false);
-            e.printStackTrace();
-            return QueryData.newBuilder(query)
-                    .withIsValid(false)
-                    .build();
+            QueryData queryData = detectTypos(query);
+            if(queryData.getTypos()>0){
+                return validateQuery(queryData);
+            } else {
+                query.setValid(false);
+                e.printStackTrace();
+                return QueryData.newBuilder(query)
+                        .withIsValid(false)
+                        .build();
+            }
         }
+    }
+
+    private QueryData detectTypos(QueryData queryData) {
+        String stringToCheck = queryData.getQueryString();
+        Multimap<String,String> typoMap = ArrayListMultimap.create();
+        typoMap.put("SELECT", "SELECTO");
+        typoMap.put("SELECT", "SELECTADO");
+        typoMap.put("SELECT", "SELCT");
+        typoMap.put("FROM", "FORM");
+        typoMap.put("FROM", "FRM");
+        int numberOfTypos = 0;
+
+        for(String typo : typoMap.values()) {
+            if(stringToCheck.contains(typo)) {
+                String fixer = typoMap.entries().stream()
+                        .filter(entry -> entry.getValue().equals(typo))
+                        .findFirst()
+                        .get()
+                        .getKey();
+                stringToCheck = stringToCheck.replaceAll(typo,fixer);
+                numberOfTypos++;
+            }
+        }
+        return QueryData.newBuilder(queryData)
+            .withQueryString(stringToCheck)
+            .withTypos(numberOfTypos)
+                .build();
     }
 
     private Map<Boolean, List<QueryData>> printReport(List<QueryData> queries) {
@@ -56,7 +92,7 @@ public class SqlDissecter {
                 .findFirst()
                 .get();
 
-        Map<Boolean, List<QueryData>> collect = queries.stream()
+        Map<Boolean, List<QueryData>> validQueries = queries.stream()
                 .filter(QueryData::isValid)
                 .filter(query -> !query.isRef())
                 .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));
@@ -64,14 +100,16 @@ public class SqlDissecter {
         System.out.println("----------------------------REPORT-----------------------------------------------");
         System.out.println("Ref query: " + referenceResult.getQueryString());
         System.out.println("------------------------VALID QUERIES--------------------------------------------");
-        collect.forEach((key, value) -> value.forEach(query ->
+        validQueries.forEach((key, value) -> value.forEach(query ->
                 System.out.println("Query " + query.getQueryString() + " Identifier: " + query.getIdentifier() + " isCorrect: " + key)
         ));
         System.out.println("----------------------INVALID QUERIES--------------------------------------------");
         queries.stream()
                 .filter(queryData -> !queryData.isValid())
                 .forEach(queryData -> System.out.println("Failed to process query: " + queryData.getQueryString() + " it belongs to: " + queryData.getIdentifier()));
-        return collect;
-    }
+
+        return queries.stream()
+                .filter(queryData -> !queryData.isRef())
+                .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));    }
 
 }
