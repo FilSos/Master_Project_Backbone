@@ -36,7 +36,7 @@ public class Main implements Initializable {
 
     private File queryFile = null;
 
-    Map<Boolean, List<QueryData>> resultList;
+    List<QueryData> resultList;
 
     void addDbToCombobox(model.Base base) {
         baseList.getItems().add(base);

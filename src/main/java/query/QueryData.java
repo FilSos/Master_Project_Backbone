@@ -13,12 +13,14 @@ public class QueryData {
     boolean isRef; // czy jest referencyjny, tj oznaczenie przykladu
     List result; // wynik wykonania na bazie
     int typos; //miejsce na spisanie literowek
+    Integer score; //ocena
 
     public QueryData(String queryString, String identifier, boolean isRef) {
         this.queryString = queryString;
         this.identifier = identifier;
         this.isRef = isRef;
         this.typos = 0;
+        this.score = 0;
         result = new ArrayList();
     }
 
@@ -30,6 +32,7 @@ public class QueryData {
         setRef(builder.isRef);
         setResult(builder.result);
         setTypos(builder.typos);
+        setScore(builder.score);
     }
 
     public static Builder newBuilder() {
@@ -104,6 +107,13 @@ public class QueryData {
         this.typos = typos;
     }
 
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
 
     public static final class Builder {
         private String identifier;
@@ -113,6 +123,7 @@ public class QueryData {
         private boolean isRef;
         private List result;
         private int typos;
+        private Integer score;
 
         private Builder() {
         }
@@ -144,6 +155,11 @@ public class QueryData {
 
         public Builder withResult(List val) {
             result = val;
+            return this;
+        }
+
+        public Builder withScore(Integer val) {
+            score = val;
             return this;
         }
 
