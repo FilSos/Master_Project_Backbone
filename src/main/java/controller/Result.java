@@ -27,10 +27,10 @@ public class Result implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         resultList.setEditable(true);
 
-        TableColumn index = new TableColumn("Index number");
-        TableColumn queryString = new TableColumn("Query");
-        TableColumn typos = new TableColumn("Typos");
-        TableColumn result = new TableColumn("Result %");
+        TableColumn index = new TableColumn("Numer indeksu");
+        TableColumn queryString = new TableColumn("Zapytanie");
+        TableColumn typos = new TableColumn("Literówki");
+        TableColumn result = new TableColumn("Poprawność %");
         resultList.getColumns().addAll(index, queryString, typos, result);
         Map<Boolean, List<QueryData>> resultList = mainController.resultList;
         List<QueryData> list = resultList.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
