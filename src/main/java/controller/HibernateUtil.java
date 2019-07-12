@@ -23,6 +23,7 @@ public class HibernateUtil {
         return sessionFactory;
     }
 
-    private HibernateUtil(){}
+    private HibernateUtil() {
+    }
 
 }

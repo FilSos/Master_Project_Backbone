@@ -46,14 +46,14 @@ public class Base implements Initializable {
         String password = this.password.getText();
         System.out.println("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" +
                 "Username: " + username + "\n" + "Password: " + password + "\n" + "Driver: " + driver);
-            model.Base base = new model.Base();
+        model.Base base = new model.Base();
         base.setName(dbName);
         base.setDriver(driver);
         base.setUrl(url);
         base.setUsername(username);
         base.setPassword(password);
         mainController.addDbToCombobox(base);
-        try (OutputStream output = new FileOutputStream( "src/main/resources/" + dbName + ".properties")) {
+        try (OutputStream output = new FileOutputStream("src/main/resources/" + dbName + ".properties")) {
             Properties prop = new Properties();
             prop.setProperty("db.name", dbName);
             prop.setProperty("db.driver", driver);
@@ -64,7 +64,7 @@ public class Base implements Initializable {
             prop.store(output, null);
             System.out.println(prop);
 
-        }catch (IOException io){
+        } catch (IOException io) {
             io.printStackTrace();
         }
 
