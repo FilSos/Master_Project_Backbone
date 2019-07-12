@@ -12,9 +12,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import query.QueryData;
 
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static view.Main.mainController;
 
@@ -31,17 +30,18 @@ public class Result implements Initializable {
         TableColumn index = new TableColumn("Index number");
         TableColumn queryString = new TableColumn("Query");
         TableColumn typos = new TableColumn("Typos");
-        TableColumn result = new TableColumn("Result");
-//        index.setCellValueFactory(new PropertyValueFactory("1"));
-//        queryString.setCellValueFactory(new PropertyValueFactory("2"));
-//        typos.setCellValueFactory(new PropertyValueFactory("3"));
-//        result.setCellValueFactory(new PropertyValueFactory("4"));
-        resultList.getColumns().setAll(index, queryString, typos,result);
+        TableColumn result = new TableColumn("Result %");
+        resultList.getColumns().addAll(index, queryString, typos, result);
         Map<Boolean, List<QueryData>> resultList = mainController.resultList;
-        ObservableList<QueryData> items = FXCollections.observableArrayList();
-        resultList.forEach((key, value) -> value.forEach(query ->
-                items.setAll(query.getIdentifier(),query.getQueryString(),String.valueOf(query.getTypos()),"Poprawność zapytania: " + (100-(query.getTypos()*5)) + "%")
-        ));
+        List<QueryData> list = resultList.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
+        ObservableList<QueryData> items = FXCollections.observableArrayList(
+                list
+        );
+        index.setCellValueFactory(new PropertyValueFactory<QueryData,String>("identifier"));
+        queryString.setCellValueFactory(new PropertyValueFactory<QueryData,String>("queryString"));
+        typos.setCellValueFactory(new PropertyValueFactory<QueryData,Integer>("typos"));
+        //TODO potrzebuje miec Integera, a nei liste
+        result.setCellValueFactory(new PropertyValueFactory<QueryData,List>("result"));
 
         this.resultList.setItems(items);
     }
