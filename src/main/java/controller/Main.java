@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +13,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import model.Base;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import parser.SqlDissecter;
 import query.QueryData;
 
@@ -150,4 +153,14 @@ public class Main implements Initializable {
         }
     }
 
+    public void baseDataClick() {
+        String username = baseList.getSelectionModel().getSelectedItem().getUsername();
+        String password = baseList.getSelectionModel().getSelectedItem().getUsername();
+        Configuration cfg = new Configuration();
+        cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
+        String newUserName, newPassword;//set them as per your needs
+        cfg.getProperties().setProperty("hibernate.connection.username", username);
+        cfg.getProperties().setProperty("hibernate.connection.password", password);
+        SessionFactory sessions = cfg.buildSessionFactory();
+    }
 }
