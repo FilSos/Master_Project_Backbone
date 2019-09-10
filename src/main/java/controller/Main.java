@@ -41,6 +41,8 @@ public class Main implements Initializable {
 
     List<QueryData> resultList;
 
+    Configuration cfg;
+
     void addDbToCombobox(model.Base base) {
         baseList.getItems().add(base);
         ObservableList<Base> items = baseList.getItems();
@@ -107,7 +109,7 @@ public class Main implements Initializable {
 
     public void btnProgramStartClick() throws IOException {
         System.out.println("Wystartuj program");
-
+        cfg.buildSessionFactory();
         if (queryFile != null) {
             List<QueryData> queries = Files.lines(queryFile.toPath())
                     .map(this::mapToQueryData)
@@ -156,11 +158,11 @@ public class Main implements Initializable {
     public void baseDataClick() {
         String username = baseList.getSelectionModel().getSelectedItem().getUsername();
         String password = baseList.getSelectionModel().getSelectedItem().getUsername();
-        Configuration cfg = new Configuration();
+        String dbName = baseList.getSelectionModel().getSelectedItem().getName();
+        cfg = new Configuration();
         cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
-        String newUserName, newPassword;//set them as per your needs
         cfg.getProperties().setProperty("hibernate.connection.username", username);
         cfg.getProperties().setProperty("hibernate.connection.password", password);
-        SessionFactory sessions = cfg.buildSessionFactory();
+        System.out.println("Wybrano bazę " + dbName);
     }
 }
