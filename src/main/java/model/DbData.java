@@ -1,25 +1,20 @@
 package model;
 
-public class Base {
-
+public class DbData {
     private String name;
     private String driver;
     private String url;
     private String dialect;
-    private String username;
-    private String password;
 
 
-    public Base(String name, String driver, String url, String dialect, String username, String password) {
+    public DbData(String name, String driver, String url, String dialect) {
         this.name = name;
         this.driver = driver;
         this.url = url;
         this.dialect = dialect;
-        this.username = username;
-        this.password = password;
     }
 
-    public Base() {
+    public DbData() {
     }
 
     public String getName() {
@@ -44,22 +39,6 @@ public class Base {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getDialect() {
