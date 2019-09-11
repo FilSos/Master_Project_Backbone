@@ -1,7 +1,6 @@
 package controller;
 
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -58,6 +57,21 @@ public class Main implements Initializable {
 
         System.out.println("wielkosc listy: " + items.size());
         System.out.println("Dodano baze o nazwie: " + base.getName());
+    }
+
+    void deleteDbFromCombobox() {
+        btnDelete.setVisible(false);
+        btnEdit.setVisible(false);
+        Base selectedItem = baseList.getSelectionModel().getSelectedItem();
+        String dbName = baseList.getSelectionModel().getSelectedItem().getName();
+        File dir = new File("src/main/resources/" + dbName + ".properties");
+        if (dir.delete()) {
+            baseList.getItems().remove(selectedItem);
+            System.out.println(dbName + " deleted from list");
+            System.out.println(dir.getName() + " file deleted from resources");
+        } else {
+            System.out.println(dir.getName() + " doesn't exist");
+        }
     }
 
     @Override
@@ -163,22 +177,45 @@ public class Main implements Initializable {
     }
 
     public void baseDataClick() {
-        String username = baseList.getSelectionModel().getSelectedItem().getUsername();
-        String password = baseList.getSelectionModel().getSelectedItem().getUsername();
-        String dbName = baseList.getSelectionModel().getSelectedItem().getName();
-        cfg = new Configuration();
-        cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
-        cfg.getProperties().setProperty("hibernate.connection.username", username);
-        cfg.getProperties().setProperty("hibernate.connection.password", password);
-        System.out.println("Wybrano bazę " + dbName);
-        btnDelete.setVisible(true);
-        btnEdit.setVisible(true);
+        if (null != baseList.getSelectionModel().getSelectedItem()) {
+            String username = baseList.getSelectionModel().getSelectedItem().getUsername();
+            String password = baseList.getSelectionModel().getSelectedItem().getUsername();
+            String dbName = baseList.getSelectionModel().getSelectedItem().getName();
+            cfg = new Configuration();
+            cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
+            cfg.getProperties().setProperty("hibernate.connection.username", username);
+            cfg.getProperties().setProperty("hibernate.connection.password", password);
+            System.out.println("Wybrano bazę " + dbName);
+            btnDelete.setVisible(true);
+            btnEdit.setVisible(true);
+        } else {
+            System.out.println("Brak elementu");
+        }
     }
 
-    public void btnEditClick() {
-
+    public void btnEditClick() throws IOException {
+        System.out.println("Edytuj baze");
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("base.fxml")));
+        primaryStage.setTitle("Edytuj bazę danych");
+        primaryStage.setMaximized(false);
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        // primaryStage.initModality(Modality.APPLICATION_MODAL);
+        primaryStage.show();
     }
 
-    public void btnDeleteClick() {
+    public void btnDeleteClick() throws IOException {
+        System.out.println("Potwierdź usunięcie");
+        Stage primaryStage = new Stage();
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("confirm.fxml")));
+        primaryStage.setTitle("Usuń bazę");
+        primaryStage.setMaximized(false);
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+        primaryStage.setScene(scene);
+        // primaryStage.initModality(Modality.APPLICATION_MODAL);
+        primaryStage.show();
     }
 }

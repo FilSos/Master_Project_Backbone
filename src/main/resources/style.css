@@ -16,6 +16,10 @@
     -fx-background-image: url("test.jpg");
     -fx-background-size: 100% 100%;
 }
+.scene_3{
+    -fx-background-image: url("crying.jpg");
+    -fx-background-size: 100% 100%;
+}
 .btn{
     -fx-background-color: teal;
     -fx-text-fill: #FFFFFF;
