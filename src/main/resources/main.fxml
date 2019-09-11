@@ -39,6 +39,8 @@
             <Button fx:id="btnProgramStart" layoutX="366.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnProgramStartClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Uruchom program" />
             <Button fx:id="btnAddFile" layoutX="566.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnAddFileClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj plik" />
             <ComboBox fx:id="baseList" layoutX="366.0" layoutY="140.0" onAction="#baseDataClick" prefHeight="39.0" prefWidth="185.0" promptText="Wybierz bazę" styleClass="btn" />
+            <Button fx:id="btnEdit" layoutX="366.0" layoutY="202.0" mnemonicParsing="false" onAction="#btnEditClick" prefHeight="39.0" prefWidth="89.0" styleClass="btn" text="Edytuj" />
+            <Button fx:id="btnDelete" layoutX="462.0" layoutY="202.0" mnemonicParsing="false" onAction="#btnDeleteClick" prefHeight="39.0" prefWidth="89.0" styleClass="btn_red" text="Usuń" />
             <Label layoutX="401.0" layoutY="-37.0" prefHeight="104.0" prefWidth="277.0" text="SQLminator">
                  <font>
                   <Font size="50.0" />
@@ -65,11 +67,11 @@
                   </LinearGradient>
                </textFill>
             </Label>
-            <Label fx:id="csvStatus" contentDisplay="CENTER" layoutX="431.0" layoutY="205.0" textAlignment="CENTER" textFill="RED">
+            <Label fx:id="csvStatus" contentDisplay="CENTER" layoutX="437.0" layoutY="260.0" textAlignment="CENTER" textFill="RED">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font></Label>
-            <Label fx:id="startProgramStatus" alignment="CENTER" contentDisplay="CENTER" layoutX="431.0" layoutY="241.0" textFill="RED">
+            <Label fx:id="startProgramStatus" alignment="CENTER" contentDisplay="CENTER" layoutX="437.0" layoutY="296.0" textFill="RED">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

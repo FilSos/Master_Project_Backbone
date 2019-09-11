@@ -1,11 +1,13 @@
 package controller;
 
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.FileChooser;
@@ -35,6 +37,12 @@ public class Main implements Initializable {
     @FXML
     public Label startProgramStatus;
 
+    @FXML
+    public Button btnEdit;
+
+    @FXML
+    public Button btnDelete;
+
     private File queryFile = null;
 
     List<QueryData> resultList;
@@ -54,7 +62,8 @@ public class Main implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        btnDelete.setVisible(false);
+        btnEdit.setVisible(false);
         baseList.setConverter(new StringConverter<Base>() {
             @Override
             public String toString(Base object) {
@@ -87,7 +96,6 @@ public class Main implements Initializable {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
 
             }
         }
@@ -163,5 +171,14 @@ public class Main implements Initializable {
         cfg.getProperties().setProperty("hibernate.connection.username", username);
         cfg.getProperties().setProperty("hibernate.connection.password", password);
         System.out.println("Wybrano bazę " + dbName);
+        btnDelete.setVisible(true);
+        btnEdit.setVisible(true);
+    }
+
+    public void btnEditClick() {
+
+    }
+
+    public void btnDeleteClick() {
     }
 }

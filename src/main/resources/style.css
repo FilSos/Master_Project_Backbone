@@ -21,6 +21,18 @@
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 18px;
 }
+.btn_red{
+    -fx-background-color: #C00000 ;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+}
+.btn_red:pressed{
+    -fx-background-color: purple;
+}
+.btn_red:hover{
+    -fx-cursor: hand;
+}
+
 .btn:pressed{
     -fx-background-color: purple;
 }
