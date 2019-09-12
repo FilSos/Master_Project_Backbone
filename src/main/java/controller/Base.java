@@ -13,9 +13,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.stream.IntStream;
 
 import static view.Main.mainController;
 
@@ -33,17 +32,30 @@ public class Base implements Initializable {
     @FXML
     public Button btnSave;
 
+    private ArrayList<DbData> dbDataList = new ArrayList<>();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         dbData.setConverter(new DbDataConverter());
         btnSave.setDisable(false);
         dbData.getItems().addAll(createdDbList());
+        model.Base selectedBase;
+        if (null != mainController.baseList.getSelectionModel().getSelectedItem()) {
+            selectedBase = mainController.baseList.getSelectionModel().getSelectedItem();
+            dbName.setText(selectedBase.getName());
+            username.setText(selectedBase.getUsername());
+            password.setText(selectedBase.getPassword());
+            OptionalInt indexOpt = IntStream.range(0, dbDataList.size())
+                    .filter(i -> selectedBase.getDriver().equals(dbDataList.get(i).getDriver()))
+                    .findFirst();
+            if (indexOpt.isPresent()) {
+                this.dbData.getSelectionModel().select(indexOpt.getAsInt());
+            }
+        }
     }
 
     //TODO add data to dbData combobox
     private ArrayList<DbData> createdDbList() {
-        ArrayList<DbData> dbDataList = new ArrayList<>();
-
         dbDataList.add(new DbData("MySQL", "dupa", "dupa1", "dupa2"));
         dbDataList.add(new DbData("MySQL2", "dupa3", "dupa4", "dupa5"));
 
