@@ -40,7 +40,7 @@ public class Base implements Initializable {
         btnSave.setDisable(false);
         dbData.getItems().addAll(createdDbList());
         model.Base selectedBase;
-        if (null != mainController.baseList.getSelectionModel().getSelectedItem()) {
+        if (null != mainController.baseList.getSelectionModel().getSelectedItem() && mainController.btnEdit.isArmed()) {
             selectedBase = mainController.baseList.getSelectionModel().getSelectedItem();
             dbName.setText(selectedBase.getName());
             username.setText(selectedBase.getUsername());
