@@ -65,7 +65,6 @@ public class Base implements Initializable {
     @FXML
     public void btnSaveClick() {
         System.out.println("Zapisz dane do bazy");
-
         String dbName = this.dbName.getText();
         String dialect = dbData.getSelectionModel().getSelectedItem().getDialect();
         String driver = dbData.getSelectionModel().getSelectedItem().getDriver();
@@ -81,23 +80,28 @@ public class Base implements Initializable {
         base.setDialect(dialect);
         base.setUsername(username);
         base.setPassword(password);
-        mainController.addDbToCombobox(base);
-        try (OutputStream output = new FileOutputStream("src/main/resources/" + dbName + ".properties")) {
-            Properties prop = new Properties();
-            prop.setProperty("db.name", dbName);
-            prop.setProperty("db.dialect", dialect);
-            prop.setProperty("db.driver", driver);
-            prop.setProperty("db.url", url);
-            prop.setProperty("db.username", username);
-            prop.setProperty("db.password", password);
+        if (null == mainController.baseList.getSelectionModel().getSelectedItem()) {
+            System.out.println("Nowa baza");
+            mainController.addDbToCombobox(base);
+            try (OutputStream output = new FileOutputStream("src/main/resources/" + dbName + ".properties")) {
+                Properties prop = new Properties();
+                prop.setProperty("db.name", dbName);
+                prop.setProperty("db.dialect", dialect);
+                prop.setProperty("db.driver", driver);
+                prop.setProperty("db.url", url);
+                prop.setProperty("db.username", username);
+                prop.setProperty("db.password", password);
 
-            prop.store(output, null);
-            System.out.println(prop);
+                prop.store(output, null);
+                System.out.println(prop);
 
-        } catch (IOException io) {
-            io.printStackTrace();
+            } catch (IOException io) {
+                io.printStackTrace();
+            }
+        } else {
+            //TODO save edited database
+            System.out.println("Istniejąca baza");
         }
-
         Stage stage = (Stage) btnSave.getScene().getWindow();
         stage.close();
     }
