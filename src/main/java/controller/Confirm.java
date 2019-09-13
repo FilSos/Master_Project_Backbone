@@ -29,7 +29,7 @@ public class Confirm implements Initializable {
     @FXML
     public void btnYesClick() {
         System.out.println("Usuń");
-        mainController.deleteDbFromCombobox();
+        mainController.deleteDbFromCombobox(null);
         Stage stage = (Stage) btnYes.getScene().getWindow();
         stage.close();
     }

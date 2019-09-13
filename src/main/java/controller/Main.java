@@ -42,6 +42,9 @@ public class Main implements Initializable {
     @FXML
     public Button btnDelete;
 
+    @FXML
+    public Button btnAddBase;
+
     private File queryFile = null;
 
     List<QueryData> resultList;
@@ -59,11 +62,13 @@ public class Main implements Initializable {
         System.out.println("Dodano baze o nazwie: " + base.getName());
     }
 
-    void deleteDbFromCombobox() {
+    void deleteDbFromCombobox(String dbName) {
         btnDelete.setVisible(false);
         btnEdit.setVisible(false);
         Base selectedItem = baseList.getSelectionModel().getSelectedItem();
-        String dbName = baseList.getSelectionModel().getSelectedItem().getName();
+        if (null == dbName) {
+            dbName = baseList.getSelectionModel().getSelectedItem().getName();
+        }
         File dir = new File("src/main/resources/" + dbName + ".properties");
         if (dir.delete()) {
             baseList.getItems().remove(selectedItem);
