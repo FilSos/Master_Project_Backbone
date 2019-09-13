@@ -45,7 +45,8 @@ public class Main implements Initializable {
     @FXML
     public Button btnAddBase;
 
-    private File queryFile = null;
+    private List<File> queryFiles = null;
+    private ArrayList<String> fileNames = new ArrayList<>();
 
     List<QueryData> resultList;
 
@@ -136,23 +137,24 @@ public class Main implements Initializable {
     public void btnProgramStartClick() throws IOException {
         System.out.println("Wystartuj program");
         cfg.buildSessionFactory();
-        if (queryFile != null) {
-            List<QueryData> queries = Files.lines(queryFile.toPath())
-                    .map(this::mapToQueryData)
-                    .collect(Collectors.toList());
-            startProgramStatus.setText("");
-            SqlDissecter sqlDissecter = new SqlDissecter();
-            resultList = sqlDissecter.evaluateQueries(queries);
-            Stage primaryStage = new Stage();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("result.fxml")));
-            primaryStage.setTitle("Wynik");
-            primaryStage.setMaximized(false);
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
-            primaryStage.setScene(scene);
-            // primaryStage.initModality(Modality.APPLICATION_MODAL);
-            primaryStage.show();
-
+        if (queryFiles != null) {
+            for (File queryFile : queryFiles) {
+                List<QueryData> queries = Files.lines(queryFile.toPath())
+                        .map(this::mapToQueryData)
+                        .collect(Collectors.toList());
+                startProgramStatus.setText("");
+                SqlDissecter sqlDissecter = new SqlDissecter();
+                resultList = sqlDissecter.evaluateQueries(queries);
+                Stage primaryStage = new Stage();
+                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("result.fxml")));
+                primaryStage.setTitle("Wynik dla " + queryFile.getName());
+                primaryStage.setMaximized(false);
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
+                primaryStage.setScene(scene);
+                // primaryStage.initModality(Modality.APPLICATION_MODAL);
+                primaryStage.show();
+            }
         } else {
             startProgramStatus.setText("Nie wybrano pliku z zapytaniami!");
         }
@@ -167,14 +169,21 @@ public class Main implements Initializable {
     }
 
     public void btnAddFileClick() {
-        System.out.println("Dodaj plik");
+        System.out.println("Dodaj pliki");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("txt files", "*.txt"),
                 new FileChooser.ExtensionFilter("csv files", "*.csv"));
-        queryFile = fileChooser.showOpenDialog(null);
-        if (queryFile != null) {
-            csvStatus.setText("Wybrano: " + queryFile.getName());
-            System.out.println("Wybrano: " + queryFile.getName());
+        queryFiles = fileChooser.showOpenMultipleDialog(null);
+        for (File file : queryFiles) {
+            fileNames.add(file.getName());
+        }
+        if (fileNames != null) {
+            StringBuilder filesSelected = new StringBuilder();
+            for (String name : fileNames) {
+                filesSelected.append(name).append("\n");
+            }
+            csvStatus.setText("Wybrano: " + filesSelected);
+            System.out.println("Wybrano: " + filesSelected);
         } else {
             csvStatus.setText("Nie wybrano żadnego pliku");
             System.out.println("Nie wybrano żadnego pliku");
