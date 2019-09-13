@@ -53,6 +53,8 @@ public class Base implements Initializable {
             }
         } else if (mainController.btnAddBase.isArmed()) {
             mainController.baseList.getSelectionModel().clearSelection();
+            mainController.btnDelete.setVisible(false);
+            mainController.btnEdit.setVisible(false);
         }
     }
 
