@@ -136,8 +136,8 @@ public class Main implements Initializable {
 
     public void btnProgramStartClick() throws IOException {
         System.out.println("Wystartuj program");
-        cfg.buildSessionFactory();
         if (queryFiles != null) {
+            cfg.buildSessionFactory();
             for (File queryFile : queryFiles) {
                 List<QueryData> queries = Files.lines(queryFile.toPath())
                         .map(this::mapToQueryData)
@@ -174,10 +174,12 @@ public class Main implements Initializable {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("txt files", "*.txt"),
                 new FileChooser.ExtensionFilter("csv files", "*.csv"));
         queryFiles = fileChooser.showOpenMultipleDialog(null);
-        for (File file : queryFiles) {
-            fileNames.add(file.getName());
+        if (queryFiles != null) {
+            for (File file : queryFiles) {
+                fileNames.add(file.getName());
+            }
         }
-        if (fileNames != null) {
+        if (!fileNames.isEmpty()) {
             StringBuilder filesSelected = new StringBuilder();
             for (String name : fileNames) {
                 filesSelected.append(name).append("\n");
