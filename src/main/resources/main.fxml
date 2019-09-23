@@ -72,7 +72,12 @@
                <font>
                   <Font name="System Bold" size="18.0" />
                </font></Label>
-            <Label fx:id="startProgramStatus" alignment="CENTER" contentDisplay="CENTER" layoutX="437.0" layoutY="296.0" textFill="RED">
+            <Label fx:id="startProgramStatus" alignment="CENTER" contentDisplay="CENTER" layoutX="437.0" layoutY="329.0" textFill="RED">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="parametersFileStatus" alignment="CENTER" contentDisplay="CENTER" layoutX="437.0" layoutY="295.0" textFill="RED">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>

@@ -34,6 +34,9 @@ public class Main implements Initializable {
     public Label csvStatus;
 
     @FXML
+    public Label parametersFileStatus;
+
+    @FXML
     public Label startProgramStatus;
 
     @FXML
@@ -47,6 +50,7 @@ public class Main implements Initializable {
 
     private List<File> queryFiles = null;
     private ArrayList<String> fileNames = new ArrayList<>();
+    private File parametersFile = null;
 
     List<QueryData> resultList;
 
@@ -135,8 +139,9 @@ public class Main implements Initializable {
     }
 
     public void btnProgramStartClick() throws IOException {
+        //TODO Dołożyłem plik z parametrami(parametersFile). Dostosuj sobie jak chcesz czytać jeden i drugi
         System.out.println("Wystartuj program");
-        if (queryFiles != null) {
+        if (queryFiles != null && parametersFile != null) {
             cfg.buildSessionFactory();
             for (File queryFile : queryFiles) {
                 List<QueryData> queries = Files.lines(queryFile.toPath())
@@ -156,7 +161,7 @@ public class Main implements Initializable {
                 primaryStage.show();
             }
         } else {
-            startProgramStatus.setText("Nie wybrano pliku z zapytaniami!");
+            startProgramStatus.setText("Nie wybrano pliku z zapytaniami i/lub parametrami!");
         }
     }
 
@@ -187,13 +192,24 @@ public class Main implements Initializable {
             csvStatus.setText("Wybrano: " + filesSelected);
             System.out.println("Wybrano: " + filesSelected);
         } else {
-            csvStatus.setText("Nie wybrano żadnego pliku");
-            System.out.println("Nie wybrano żadnego pliku");
+            csvStatus.setText("Nie wybrano żadnego pliku z zapytaniami");
+            System.out.println("Nie wybrano żadnego pliku z zapytaniami");
         }
     }
 
     public void btnAddParametersClick() {
         System.out.println("Dodaj plik z parametrami");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("txt files", "*.txt"),
+                new FileChooser.ExtensionFilter("csv files", "*.csv"));
+        parametersFile = fileChooser.showOpenDialog(null);
+        if (parametersFile != null) {
+            parametersFileStatus.setText("Wybrano: " + parametersFile.getName());
+            System.out.println("Wybrano: " + parametersFile.getName());
+        } else {
+            parametersFileStatus.setText("Nie wybrano żadnego pliku z parametrami");
+            System.out.println("Nie wybrano żadnego pliku z parametrami");
+        }
     }
 
     public void baseDataClick() {
