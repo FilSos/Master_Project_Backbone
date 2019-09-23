@@ -31,6 +31,8 @@ public class Base implements Initializable {
     public ComboBox<DbData> dbData;
     @FXML
     public Button btnSave;
+    @FXML
+    public TextField queryString;
 
     private ArrayList<DbData> dbDataList = new ArrayList<>();
 
@@ -51,6 +53,7 @@ public class Base implements Initializable {
             if (indexOpt.isPresent()) {
                 this.dbData.getSelectionModel().select(indexOpt.getAsInt());
             }
+            queryString.setText(selectedBase.getQueryString());
         } else if (mainController.btnAddBase.isArmed()) {
             mainController.baseList.getSelectionModel().clearSelection();
             mainController.btnDelete.setVisible(false);
@@ -60,8 +63,8 @@ public class Base implements Initializable {
 
     //TODO add data to dbData combobox
     private ArrayList<DbData> createdDbList() {
-        dbDataList.add(new DbData("MySQL", "test", "test1", "test2"));
-        dbDataList.add(new DbData("MySQL2", "test3", "test4", "test5"));
+        dbDataList.add(new DbData("MySQL", "test", "test1/", "test2"));
+        dbDataList.add(new DbData("MySQL2", "test3", "test4/", "test5"));
 
         return dbDataList;
     }
@@ -75,7 +78,8 @@ public class Base implements Initializable {
         String url = dbData.getSelectionModel().getSelectedItem().getUrl();
         String username = this.username.getText();
         String password = this.password.getText();
-        System.out.println("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" +
+        String queryString = this.queryString.getText();
+        System.out.println("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" + "Query string: " + queryString + "\n" +
                 "Username: " + username + "\n" + "Password: " + password + "\n" + "Driver: " + driver + "\n" + "Dialect: " + dialect);
 
         if (null == mainController.baseList.getSelectionModel().getSelectedItem()) {
@@ -87,6 +91,7 @@ public class Base implements Initializable {
             base.setDialect(dialect);
             base.setUsername(username);
             base.setPassword(password);
+            base.setQueryString(queryString);
             mainController.addDbToCombobox(base);
         } else {
             System.out.println("Istniejąca baza");
@@ -98,6 +103,7 @@ public class Base implements Initializable {
             selectedBase.setDialect(dialect);
             selectedBase.setUsername(username);
             selectedBase.setPassword(password);
+            selectedBase.setQueryString(queryString);
             mainController.deleteDbFromCombobox(oldDbName);
             mainController.addDbToCombobox(selectedBase);
 
@@ -108,7 +114,7 @@ public class Base implements Initializable {
             prop.setProperty("db.name", dbName);
             prop.setProperty("db.dialect", dialect);
             prop.setProperty("db.driver", driver);
-            prop.setProperty("db.url", url);
+            prop.setProperty("db.url", url + queryString);
             prop.setProperty("db.username", username);
             prop.setProperty("db.password", password);
 

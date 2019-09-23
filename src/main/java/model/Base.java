@@ -8,15 +8,17 @@ public class Base {
     private String dialect;
     private String username;
     private String password;
+    private String queryString;
 
 
-    public Base(String name, String driver, String url, String dialect, String username, String password) {
+    public Base(String name, String driver, String url, String dialect, String username, String password, String queryString) {
         this.name = name;
         this.driver = driver;
         this.url = url;
         this.dialect = dialect;
         this.username = username;
         this.password = password;
+        this.queryString = queryString;
     }
 
     public Base() {
@@ -68,5 +70,13 @@ public class Base {
 
     public void setDialect(String dialect) {
         this.dialect = dialect;
+    }
+
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
     }
 }
