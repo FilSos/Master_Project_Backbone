@@ -225,7 +225,7 @@ public class Main implements Initializable {
             btnDelete.setVisible(true);
             btnEdit.setVisible(true);
         } else {
-            System.out.println("Brak elementu");
+            System.out.println("Nowa baza danych");
         }
     }
 
