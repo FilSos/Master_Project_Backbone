@@ -169,7 +169,7 @@ public class Main implements Initializable {
     }
 
     public void btnAddFileClick() {
-        System.out.println("Dodaj pliki");
+        System.out.println("Dodaj pliki z zapytaniami");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("txt files", "*.txt"),
                 new FileChooser.ExtensionFilter("csv files", "*.csv"));
@@ -190,6 +190,10 @@ public class Main implements Initializable {
             csvStatus.setText("Nie wybrano żadnego pliku");
             System.out.println("Nie wybrano żadnego pliku");
         }
+    }
+
+    public void btnAddParametersClick() {
+        System.out.println("Dodaj plik z parametrami");
     }
 
     public void baseDataClick() {

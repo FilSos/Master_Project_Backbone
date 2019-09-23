@@ -35,13 +35,14 @@
    <children>
       <AnchorPane prefHeight="410.0" prefWidth="277.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
          <children>
-            <Button fx:id="btnAddBase" layoutX="566.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnAddBaseClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj bazę" />
+            <Button fx:id="btnAddBase" layoutX="566.0" layoutY="202.0" mnemonicParsing="false" onAction="#btnAddBaseClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Dodaj bazę" />
             <Button fx:id="btnProgramStart" layoutX="366.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnProgramStartClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Uruchom program" />
-            <Button fx:id="btnAddFile" layoutX="566.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnAddFileClick" prefHeight="39.0" prefWidth="148.0" styleClass="btn" text="Dodaj pliki" />
+            <Button fx:id="btnAddFile" layoutX="566.0" layoutY="76.0" mnemonicParsing="false" onAction="#btnAddFileClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Dodaj zapytania" />
             <ComboBox fx:id="baseList" layoutX="366.0" layoutY="140.0" onAction="#baseDataClick" prefHeight="39.0" prefWidth="185.0" promptText="Wybierz bazę" styleClass="btn" />
             <Button fx:id="btnEdit" layoutX="366.0" layoutY="202.0" mnemonicParsing="false" onAction="#btnEditClick" prefHeight="39.0" prefWidth="89.0" styleClass="btn" text="Edytuj" />
             <Button fx:id="btnDelete" layoutX="462.0" layoutY="202.0" mnemonicParsing="false" onAction="#btnDeleteClick" prefHeight="39.0" prefWidth="89.0" styleClass="btn_red" text="Usuń" />
-            <Label layoutX="401.0" layoutY="-37.0" prefHeight="104.0" prefWidth="277.0" text="SQLminator">
+            <Button fx:id="btnAddParameters" layoutX="566.0" layoutY="140.0" mnemonicParsing="false" onAction="#btnAddParametersClick" prefHeight="39.0" prefWidth="185.0" styleClass="btn" text="Dodaj parametry" />
+            <Label layoutX="428.0" layoutY="-38.0" prefHeight="104.0" prefWidth="277.0" text="SQLminator">
                  <font>
                   <Font size="50.0" />
                </font>
