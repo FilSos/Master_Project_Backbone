@@ -225,11 +225,11 @@ public class Main implements Initializable {
             String url = baseList.getSelectionModel().getSelectedItem().getUrl();
             cfg = new Configuration();
             cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
-            cfg.getProperties().setProperty("connection.username", username);
-            cfg.getProperties().setProperty("connection.password", password);
-            cfg.getProperties().setProperty("connection.driver_class", driver);
-            cfg.getProperties().setProperty("connection.url", url);
-            cfg.getProperties().setProperty("dialect", dialect);
+            cfg.getProperties().setProperty("hibernate.connection.username", username);
+            cfg.getProperties().setProperty("hibernate.connection.password", password);
+            cfg.getProperties().setProperty("hibernate.connection.driver_class", driver);
+            cfg.getProperties().setProperty("hibernate.connection.url", url);
+            cfg.getProperties().setProperty("hibernate.dialect", dialect);
             System.out.println("Wybrano bazę " + dbName);
             btnDelete.setVisible(true);
             btnEdit.setVisible(true);
