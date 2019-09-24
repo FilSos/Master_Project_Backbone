@@ -15,7 +15,7 @@ public class SqlDissecter {
 
     QueryExecuter queryExecuter = new QueryExecuter();
 
-    public List<QueryData> evaluateQueries(List<QueryData> queries) {
+    public List<QueryData> evaluateQueries(List<QueryData> queries, List<QueryData> references) {
         List<QueryData> validated = validateQueries(queries);
         List<QueryData> executed = executeOnDb(validated);
         executed.addAll(validated.stream().filter(query -> !query.isValid()).collect(Collectors.toList()));

@@ -16,7 +16,7 @@ public class QueryExecuter {
         Transaction transaction = session.beginTransaction();
         NativeQuery sqlQuery = session.createSQLQuery(queryData.getQueryString());
         List queryReturns = sqlQuery.list();
-        transaction.commit();
+        transaction.rollback();
 
         return QueryData.newBuilder(queryData)
                 .withResult(queryReturns)

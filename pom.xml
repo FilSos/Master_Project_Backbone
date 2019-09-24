@@ -63,7 +63,14 @@
             <artifactId>guava</artifactId>
             <version>28.0-jre</version>
         </dependency>
-<!--        <dependency>-->
+        <!-- https://mvnrepository.com/artifact/com.googlecode.json-simple/json-simple -->
+        <dependency>
+            <groupId>com.googlecode.json-simple</groupId>
+            <artifactId>json-simple</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!--        <dependency>-->
 <!--            <groupId>org.apache.logging.log4j</groupId>-->
 <!--            <artifactId>log4j-api</artifactId>-->
 <!--            <version>2.12.0</version>-->
