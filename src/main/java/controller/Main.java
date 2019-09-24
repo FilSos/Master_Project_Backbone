@@ -54,7 +54,7 @@ public class Main implements Initializable {
 
     List<QueryData> resultList;
 
-    Configuration cfg;
+    private Configuration cfg;
 
     void addDbToCombobox(model.Base base) {
         baseList.getItems().add(base);
@@ -110,12 +110,15 @@ public class Main implements Initializable {
                     Properties p = new Properties();
                     p.load(reader);
                     model.Base base = new model.Base();
+                    String url = p.getProperty("db.url");
+                    String queryString = url.substring(url.indexOf("/") + 1);
                     base.setPassword(p.getProperty("db.password"));
-                    base.setUrl(p.getProperty("db.url"));
+                    base.setUrl(url);
                     base.setName(p.getProperty("db.name"));
                     base.setUsername(p.getProperty("db.username"));
                     base.setDriver(p.getProperty("db.driver"));
                     base.setDialect(p.getProperty("db.dialect"));
+                    base.setQueryString(queryString);
                     baseList.getItems().add(base);
                 } catch (IOException e) {
                     e.printStackTrace();
