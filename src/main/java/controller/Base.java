@@ -68,10 +68,19 @@ public class Base implements Initializable {
         }
     }
 
-    //TODO add data to dbData combobox
     private ArrayList<DbData> createdDbList() {
-        dbDataList.add(new DbData("MySQL", "test", "test1/", "test2"));
-        dbDataList.add(new DbData("MySQL2", "test3", "test4/", "test5"));
+        dbDataList.add(new DbData("DB2", "com.ibm.db2.jcc.DB2Driver", "jdbc:db2://", "org.hibernate.dialect.DB2Dialect"));
+        dbDataList.add(new DbData("PostgreSQL", "org.postgresql.Driver", "jdbc:postgresql://", "org.hibernate.dialect.PostgreSQLDialect"));
+        dbDataList.add(new DbData("MySQL", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://", "org.hibernate.dialect.MySQLDialect"));
+        dbDataList.add(new DbData("Microsoft SQL Server", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://", "org.hibernate.dialect.SQLServerDialect"));
+        dbDataList.add(new DbData("SAP DB", "com.sap.db.jdbc.Driver", "jdbc:sap://", "org.hibernate.dialect.SAPDBDialect"));
+        //TODO SID do ustalenia(teraz 55) oraz sam driver do ogarniecia
+        //dbDataList.add(new DbData("Oracle", "oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:55/", "org.hibernate.dialect.OracleDialect"));
+//        dbDataList.add(new DbData("Sybase", "test3", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.SybaseDialect"));
+//        dbDataList.add(new DbData("Informix", "test3", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.InformixDialect"));
+//        dbDataList.add(new DbData("HypersonicSQL", "test3", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.HSQLDialect"));
+//        dbDataList.add(new DbData("Ingres", "test3", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.IngresDialect"));
+//        dbDataList.add(new DbData("Firebird", "test3", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.FirebirdDialect"));
 
         return dbDataList;
     }

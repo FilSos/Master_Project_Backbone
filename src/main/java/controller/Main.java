@@ -111,7 +111,7 @@ public class Main implements Initializable {
                     p.load(reader);
                     model.Base base = new model.Base();
                     String url = p.getProperty("db.url");
-                    String queryString = url.substring(url.indexOf("/") + 1);
+                    String queryString = url.substring(url.indexOf("/") + 2);
                     base.setPassword(p.getProperty("db.password"));
                     base.setUrl(url);
                     base.setName(p.getProperty("db.name"));
