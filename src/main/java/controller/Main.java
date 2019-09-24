@@ -217,13 +217,19 @@ public class Main implements Initializable {
 
     public void baseDataClick() {
         if (null != baseList.getSelectionModel().getSelectedItem()) {
-            String username = baseList.getSelectionModel().getSelectedItem().getUsername();
-            String password = baseList.getSelectionModel().getSelectedItem().getUsername();
             String dbName = baseList.getSelectionModel().getSelectedItem().getName();
+            String username = baseList.getSelectionModel().getSelectedItem().getUsername();
+            String password = baseList.getSelectionModel().getSelectedItem().getPassword();
+            String driver = baseList.getSelectionModel().getSelectedItem().getDriver();
+            String dialect = baseList.getSelectionModel().getSelectedItem().getDialect();
+            String url = baseList.getSelectionModel().getSelectedItem().getUrl();
             cfg = new Configuration();
             cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
-            cfg.getProperties().setProperty("hibernate.connection.username", username);
-            cfg.getProperties().setProperty("hibernate.connection.password", password);
+            cfg.getProperties().setProperty("connection.username", username);
+            cfg.getProperties().setProperty("connection.password", password);
+            cfg.getProperties().setProperty("connection.driver_class", driver);
+            cfg.getProperties().setProperty("connection.url", url);
+            cfg.getProperties().setProperty("dialect", dialect);
             System.out.println("Wybrano bazę " + dbName);
             btnDelete.setVisible(true);
             btnEdit.setVisible(true);

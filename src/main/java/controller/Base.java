@@ -74,7 +74,7 @@ public class Base implements Initializable {
         dbDataList.add(new DbData("MySQL", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://", "org.hibernate.dialect.MySQLDialect"));
         dbDataList.add(new DbData("Microsoft SQL Server", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://", "org.hibernate.dialect.SQLServerDialect"));
         dbDataList.add(new DbData("SAP DB", "com.sap.db.jdbc.Driver", "jdbc:sap://", "org.hibernate.dialect.SAPDBDialect"));
-        //TODO SID do ustalenia(teraz 55) oraz sam driver do ogarniecia
+        //TODO  driver do ogarniecia
         //dbDataList.add(new DbData("Oracle", "oracle.jdbc.driver.OracleDriver", "jdbc:oracle:thin:@127.0.0.1:55/", "org.hibernate.dialect.OracleDialect"));
 //        dbDataList.add(new DbData("Sybase", "test3", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.SybaseDialect"));
 //        dbDataList.add(new DbData("Informix", "test3", "jdbc:mysql://localhost:3306/", "org.hibernate.dialect.InformixDialect"));
