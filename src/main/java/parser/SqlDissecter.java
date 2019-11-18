@@ -9,7 +9,10 @@ import com.google.common.collect.Multimap;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.util.TablesNamesFinder;
+import org.checkerframework.checker.units.qual.C;
 import query.QueryData;
+import visitors.ColumnNamesFinder;
 
 public class SqlDissecter {
 
@@ -38,18 +41,27 @@ public class SqlDissecter {
     private QueryData validateQuery(QueryData query) {
         try {
             Statement statement = CCJSqlParserUtil.parse(query.getQueryString());
+            ColumnNamesFinder columnNamesFinder = new ColumnNamesFinder();
+            TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
+            List<String> tableList = tablesNamesFinder.getTableList(statement);
+            List<String> tableColumns = columnNamesFinder.getTableColumns(statement);
             System.out.println("Dobre:" + statement);
             return QueryData.newBuilder(query)
                     .withStatement(statement)
                     .withIsValid(true)
                     .build();
+
         } catch (JSQLParserException e) {
             QueryData queryData = detectTypos(query);
             if (queryData.getTypos() > 0) {
                 return validateQuery(queryData);
             } else {
                 query.setValid(false);
-                e.printStackTrace();
+                if(query.getQueryString().trim().equals("-")) {
+                    System.out.println("Zadanie puste");
+                }else {
+                    e.printStackTrace();
+                }
                 return QueryData.newBuilder(query)
                         .withIsValid(false)
                         .build();
