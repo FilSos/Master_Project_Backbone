@@ -2,6 +2,7 @@ package model;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import query.QueryData;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class ParsingParameters {
     List<String> usedColumns;
     List<String> usedTables;
 
-    public List<String> getReferenceQueries() {
+    public List<String> getReferenceQueriesText() {
         return referenceQueries;
     }
 
@@ -32,6 +33,12 @@ public class ParsingParameters {
         return typoMap;
     }
 
+    public List<QueryData> getReferenceQueries(){
+        return referenceQueries.stream()
+                .map(queryText -> new QueryData(queryText,"reference", true, referenceQueries.indexOf(queryText)))
+                .collect(Collectors.toList());
+    }
+
     public List<String> getUsedColumns() {
         return usedColumns;
     }
@@ -39,4 +46,6 @@ public class ParsingParameters {
     public List<String> getUsedTables() {
         return usedTables;
     }
+
+
 }

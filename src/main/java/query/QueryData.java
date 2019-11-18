@@ -14,13 +14,19 @@ public class QueryData {
     List result; // wynik wykonania na bazie
     int typos; //miejsce na spisanie literowek
     Integer score; //ocena
+    int exNumber; //numerZadania
+    double matchedColumns;
+    double matchedTables;
 
-    public QueryData(String queryString, String identifier, boolean isRef) {
-        this.queryString = queryString;
+    public QueryData(String queryString, String identifier, boolean isRef, int exNumber) {
+        this.queryString = queryString.toLowerCase().trim();
         this.identifier = identifier;
         this.isRef = isRef;
         this.typos = 0;
         this.score = 0;
+        this.exNumber = exNumber;
+        this.matchedColumns = 0.0;
+        this.matchedTables = 0.0;
         result = new ArrayList();
     }
 
@@ -48,6 +54,10 @@ public class QueryData {
         builder.isRef = copy.isRef();
         builder.result = copy.getResult();
         builder.typos = copy.getTypos();
+        builder.exNumber = copy.getExNumber();
+        builder.matchedTables = copy.getMatchedTables();
+        builder.matchedColumns= copy.getMatchedColumns();
+
         return builder;
     }
 
@@ -115,6 +125,18 @@ public class QueryData {
         this.score = score;
     }
 
+    public int getExNumber() {
+        return exNumber;
+    }
+
+    public double getMatchedColumns() {
+        return matchedColumns;
+    }
+
+    public double getMatchedTables() {
+        return matchedTables;
+    }
+
     public static final class Builder {
         private String identifier;
         private String queryString;
@@ -124,6 +146,9 @@ public class QueryData {
         private List result;
         private int typos;
         private Integer score;
+        private int exNumber;
+        private double matchedColumns;
+        private double matchedTables;
 
         private Builder() {
         }
@@ -134,7 +159,7 @@ public class QueryData {
         }
 
         public Builder withQueryString(String val) {
-            queryString = val;
+            queryString = val.toLowerCase().trim();
             return this;
         }
 
@@ -165,6 +190,21 @@ public class QueryData {
 
         public Builder withTypos(int val) {
             typos = val;
+            return this;
+        }
+
+        public Builder withExNumber(int val){
+            exNumber=val;
+            return this;
+        }
+
+        public Builder withColumnMatched(double val){
+            matchedColumns=val;
+            return this;
+        }
+
+        public Builder withTableMatched(double val){
+            matchedTables=val;
             return this;
         }
 

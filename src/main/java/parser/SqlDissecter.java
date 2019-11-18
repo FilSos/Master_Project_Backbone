@@ -1,11 +1,11 @@
 package parser;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import model.ParsingParameters;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -16,9 +16,11 @@ import visitors.ColumnNamesFinder;
 
 public class SqlDissecter {
 
-    QueryExecuter queryExecuter = new QueryExecuter();
+    private QueryExecuter queryExecuter = new QueryExecuter();
+    private ParsingParameters parsingParameters;
 
-    public List<QueryData> evaluateQueries(List<QueryData> queries, List<QueryData> references) {
+    public List<QueryData> evaluateQueries(List<QueryData> queries, ParsingParameters parsingParameters) {
+        this.parsingParameters = parsingParameters;
         List<QueryData> validated = validateQueries(queries);
         List<QueryData> executed = executeOnDb(validated);
         executed.addAll(validated.stream().filter(query -> !query.isValid()).collect(Collectors.toList()));
@@ -41,14 +43,15 @@ public class SqlDissecter {
     private QueryData validateQuery(QueryData query) {
         try {
             Statement statement = CCJSqlParserUtil.parse(query.getQueryString());
-            ColumnNamesFinder columnNamesFinder = new ColumnNamesFinder();
-            TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
-            List<String> tableList = tablesNamesFinder.getTableList(statement);
-            List<String> tableColumns = columnNamesFinder.getTableColumns(statement);
+            double tableMatches = getTableMatches(query, statement);
+            double columnsMatches = getColumnsMatches(query,statement);
+
             System.out.println("Dobre:" + statement);
             return QueryData.newBuilder(query)
                     .withStatement(statement)
                     .withIsValid(true)
+                    .withColumnMatched(columnsMatches)
+                    .withTableMatched(tableMatches)
                     .build();
 
         } catch (JSQLParserException e) {
@@ -69,14 +72,50 @@ public class SqlDissecter {
         }
     }
 
+    private double getTableMatches(QueryData query, Statement statement) {
+        TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
+        Set<String> tableList = new HashSet<>(tablesNamesFinder.getTableList(statement));
+        tableList = normalizeNames(tableList);
+        String[] split = parsingParameters.getUsedTables().get(query.getExNumber()).split(",");
+        int matches = 0;
+        for(String table : split){
+            if(tableList.contains(table.toLowerCase().trim())){
+                matches++;
+            }
+        }
+        return (double)matches/split.length;
+    }
+
+    private double getColumnsMatches(QueryData query, Statement statement) {
+        ColumnNamesFinder columnNamesFinder = new ColumnNamesFinder();
+        Set<String> tableColumns = columnNamesFinder.getTableColumns(statement);
+        tableColumns = normalizeNames(tableColumns);
+        String[] split = parsingParameters.getUsedColumns().get(query.getExNumber()).split(",");
+        int matches = 0;
+        for(String column : split){
+            if(tableColumns.contains(column.trim().toLowerCase())){
+                matches++;
+            }
+        }
+        return (double)matches/split.length;
+    }
+
+    private Set<String> normalizeNames(Set<String> strings) {
+        return strings.stream()
+                .map(this::deletePrefix)
+                .collect(Collectors.toSet());
+    }
+
+    private String deletePrefix(String name){
+        if(name.contains(".")){
+            return name.split("\\.")[1];
+        }
+        return name;
+    }
+
     private QueryData detectTypos(QueryData queryData) {
         String stringToCheck = queryData.getQueryString();
-        Multimap<String, String> typoMap = ArrayListMultimap.create();
-        typoMap.put("SELECT", "SELECTO");
-        typoMap.put("SELECT", "SELECTADO");
-        typoMap.put("SELECT", "SELCT");
-        typoMap.put("FROM", "FORM");
-        typoMap.put("FROM", "FRM");
+        Multimap<String, String> typoMap = parsingParameters.getTyposAsMultimap();
         int numberOfTypos = 0;
 
         for (String typo : typoMap.values()) {

@@ -22,39 +22,41 @@ import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ColumnNamesFinder extends TablesNamesFinder {
 
-    List<String> tableColumns = new ArrayList<>();
+    Set<String> tableColumns = new HashSet<>();
 
     @Override
     public void visit(Column tableColumn) {
         tableColumns.add(tableColumn.getFullyQualifiedName());
     }
 
-    public List<String> getTableColumns(Statement statement) {
-        tableColumns = new ArrayList<>();
+    public Set<String> getTableColumns(Statement statement) {
+        tableColumns = new HashSet<>();
         statement.accept(this);
         return tableColumns;
     }
 
-    public List<String> getTableColumns(Delete delete) {
-        tableColumns = new ArrayList<>();
+    public Set<String> getTableColumns(Delete delete) {
+        tableColumns = new HashSet<>();
         delete.getTable().accept(this);
         delete.getWhere().accept(this);
         return tableColumns;
     }
-    public List<String> getTableColumns(Insert insert) {
-        tableColumns = new ArrayList<>();
+    public Set<String> getTableColumns(Insert insert) {
+        tableColumns = new HashSet<>();
         insert.getTable().accept(this);
         if (insert.getItemsList() != null) {
             insert.getItemsList().accept(this);
         }
         return tableColumns;
     }
-    public List<String> getTableColumns(Replace replace) {
-        tableColumns = new ArrayList<>();
+    public Set<String> getTableColumns(Replace replace) {
+        tableColumns = new HashSet<>();
         if (replace.getExpressions() != null) {
             for (Expression expression : replace.getExpressions()) {
                 expression.accept(this);
@@ -67,8 +69,8 @@ public class ColumnNamesFinder extends TablesNamesFinder {
         return tableColumns;
     }
 
-    public List<String> getTableColumns(Select select) {
-        tableColumns = new ArrayList<>();
+    public Set<String> getTableColumns(Select select) {
+        tableColumns = new HashSet<>();
         if (select.getWithItemsList() != null) {
             for (WithItem withItem : select.getWithItemsList()) {
                 withItem.accept(this);
@@ -78,8 +80,8 @@ public class ColumnNamesFinder extends TablesNamesFinder {
 
         return tableColumns;
     }
-    public List<String> getTableColumns(Update update) {
-        tableColumns = new ArrayList<>();
+    public Set<String> getTableColumns(Update update) {
+        tableColumns = new HashSet<>();
         update.getTable().accept(this);
         if (update.getExpressions() != null) {
             for (Expression expression : update.getExpressions()) {

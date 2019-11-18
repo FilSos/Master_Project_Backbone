@@ -26,11 +26,9 @@ import parser.SqlDissecter;
 import query.QueryData;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -160,8 +158,8 @@ public class Main implements Initializable {
             cfg.buildSessionFactory();
 
             Map<QueryDataSet, List<QueryData>> dataMap = new HashMap<>();
-            List<QueryData> referenceQueries = extractRefQueries();
-            scoreQueries(dataMap, referenceQueries);
+
+            scoreQueries(dataMap,  extractParams());
 
             showResults();
 
@@ -182,28 +180,25 @@ public class Main implements Initializable {
         primaryStage.show();
     }
 
-    private void scoreQueries(Map<QueryDataSet, List<QueryData>> dataMap, List<QueryData> referenceQueries) {
+    private void scoreQueries(Map<QueryDataSet, List<QueryData>> dataMap, ParsingParameters parsingParameters) {
         for (File queryFile :queryFiles) {
             try (FileReader reader = new FileReader(queryFile)) {
                 List<QueryDataSet> queryDataSets = extractData(reader);
                 dataMap.putAll(getMap(queryDataSets));
                 List<QueryData> queryData = new ArrayList<>(dataMap.values()).get(0);
-                resultList.addAll(sqlDissecter.evaluateQueries(queryData, referenceQueries));
+                resultList.addAll(sqlDissecter.evaluateQueries(queryData, parsingParameters));
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private List<QueryData> extractRefQueries() throws IOException {
-        List<QueryData> referenceQueries;
+    private ParsingParameters extractParams() throws IOException {
+        ParsingParameters parameters;
         try(FileReader reader = new FileReader(parametersFile)){
-            ParsingParameters parameters = gson.fromJson(reader, ParsingParameters.class);
-            referenceQueries = parameters.getReferenceQueries().stream()
-                    .map(query -> mapToQueryData(query,"reference"))
-                    .collect(Collectors.toList());
+            parameters = gson.fromJson(reader, ParsingParameters.class);
         }
-        return referenceQueries;
+        return parameters;
     }
 
     private List<QueryDataSet> extractData(FileReader reader) throws IOException, ParseException {
@@ -218,19 +213,18 @@ public class Main implements Initializable {
         Map<QueryDataSet, List<QueryData>> dataMap = new HashMap<>();
         for (QueryDataSet dataSet : queryDataSets) {
             List<QueryData> queryDataList = dataSet.getExcercises().stream()
-                    .map(exercise -> mapToQueryData(exercise, dataSet.getEmail()))
+                    .map(exercise -> mapToQueryData(exercise, dataSet.getEmail(),dataSet.getExcercises().indexOf(exercise)))
                     .collect(Collectors.toList());
             dataMap.put(dataSet, queryDataList);
-
         }
         return dataMap;
     }
 
-    private QueryData mapToQueryData(String string, String id) {
+    private QueryData mapToQueryData(String string, String id, int exNumber) {
         if(id.equals("reference")){
-            return new QueryData(string,id,true);
+            return new QueryData(string,id,true, exNumber);
         }
-        return new QueryData(string, id, false);
+        return new QueryData(string, id, false, exNumber);
     }
 
     public void btnAddFileClick() {
