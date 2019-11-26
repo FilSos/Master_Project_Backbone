@@ -1,22 +1,25 @@
 package parser;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import model.FragmentValidationResult;
 import model.ParsingParameters;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.util.TablesNamesFinder;
-import org.checkerframework.checker.units.qual.C;
 import query.QueryData;
 import visitors.ColumnNamesFinder;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SqlDissecter {
 
     private QueryExecuter queryExecuter = new QueryExecuter();
+    private QueryFragmentValidator queryFragmentValidator = new QueryFragmentValidator();
     private ParsingParameters parsingParameters;
 
     public List<QueryData> evaluateQueries(List<QueryData> queries, ParsingParameters parsingParameters) {
@@ -45,6 +48,7 @@ public class SqlDissecter {
             Statement statement = CCJSqlParserUtil.parse(query.getQueryString());
             double tableMatches = getTableMatches(query, statement);
             double columnsMatches = getColumnsMatches(query,statement);
+            List<FragmentValidationResult> fragmentValidationResults = getFragmentValidationResults(query);
 
             System.out.println("Dobre:" + statement);
             return QueryData.newBuilder(query)
@@ -52,6 +56,7 @@ public class SqlDissecter {
                     .withIsValid(true)
                     .withColumnMatched(columnsMatches)
                     .withTableMatched(tableMatches)
+                    .withFragmentValidationResults(fragmentValidationResults)
                     .build();
 
         } catch (JSQLParserException e) {
@@ -70,6 +75,14 @@ public class SqlDissecter {
                         .build();
             }
         }
+    }
+
+    private List<FragmentValidationResult> getFragmentValidationResults(QueryData query) {
+        String queryString = query.getQueryString();
+        return parsingParameters.getCodeFragments().stream()
+                .filter(codeFragment -> codeFragment.getExNumber() == query.getExNumber())
+                .map(fragment -> queryFragmentValidator.checkSimilarity(fragment, queryString))
+                .collect(Collectors.toList());
     }
 
     private double getTableMatches(QueryData query, Statement statement) {

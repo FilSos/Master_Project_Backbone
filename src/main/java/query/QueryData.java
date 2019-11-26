@@ -1,5 +1,6 @@
 package query;
 
+import model.FragmentValidationResult;
 import net.sf.jsqlparser.statement.Statement;
 
 import java.util.ArrayList;
@@ -15,8 +16,9 @@ public class QueryData {
     int typos; //miejsce na spisanie literowek
     Integer score; //ocena
     int exNumber; //numerZadania
-    double matchedColumns;
-    double matchedTables;
+    double matchedColumns; //liczba uzytych kolumn z pliku parametrow
+    double matchedTables; //liczba uzytych tabel z pliku parametrow
+    List<FragmentValidationResult> fragmentValidationResults;
 
     public QueryData(String queryString, String identifier, boolean isRef, int exNumber) {
         this.queryString = queryString.toLowerCase().trim();
@@ -27,7 +29,8 @@ public class QueryData {
         this.exNumber = exNumber;
         this.matchedColumns = 0.0;
         this.matchedTables = 0.0;
-        result = new ArrayList();
+        this.result = new ArrayList();
+        this.fragmentValidationResults = new ArrayList<>();
     }
 
     private QueryData(Builder builder) {
@@ -39,6 +42,10 @@ public class QueryData {
         setResult(builder.result);
         setTypos(builder.typos);
         setScore(builder.score);
+        setExNumber(builder.exNumber);
+        setMatchedColumns(builder.matchedColumns);
+        setMatchedTables(builder.matchedTables);
+        setFragmentValidationResults(builder.fragmentValidationResults);
     }
 
     public static Builder newBuilder() {
@@ -56,8 +63,8 @@ public class QueryData {
         builder.typos = copy.getTypos();
         builder.exNumber = copy.getExNumber();
         builder.matchedTables = copy.getMatchedTables();
-        builder.matchedColumns= copy.getMatchedColumns();
-
+        builder.matchedColumns = copy.getMatchedColumns();
+        builder.fragmentValidationResults = copy.getFragmentValidationResults();
         return builder;
     }
 
@@ -137,6 +144,26 @@ public class QueryData {
         return matchedTables;
     }
 
+    public void setExNumber(int exNumber) {
+        this.exNumber = exNumber;
+    }
+
+    public void setMatchedColumns(double matchedColumns) {
+        this.matchedColumns = matchedColumns;
+    }
+
+    public void setMatchedTables(double matchedTables) {
+        this.matchedTables = matchedTables;
+    }
+
+    public void setFragmentValidationResults(List<FragmentValidationResult> fragmentValidationResults) {
+        this.fragmentValidationResults = fragmentValidationResults;
+    }
+
+    public List<FragmentValidationResult> getFragmentValidationResults() {
+        return fragmentValidationResults;
+    }
+
     public static final class Builder {
         private String identifier;
         private String queryString;
@@ -149,6 +176,7 @@ public class QueryData {
         private int exNumber;
         private double matchedColumns;
         private double matchedTables;
+        List<FragmentValidationResult> fragmentValidationResults;
 
         private Builder() {
         }
@@ -193,18 +221,23 @@ public class QueryData {
             return this;
         }
 
-        public Builder withExNumber(int val){
-            exNumber=val;
+        public Builder withExNumber(int val) {
+            exNumber = val;
             return this;
         }
 
-        public Builder withColumnMatched(double val){
-            matchedColumns=val;
+        public Builder withColumnMatched(double val) {
+            matchedColumns = val;
             return this;
         }
 
-        public Builder withTableMatched(double val){
-            matchedTables=val;
+        public Builder withTableMatched(double val) {
+            matchedTables = val;
+            return this;
+        }
+
+        public Builder withFragmentValidationResults(List<FragmentValidationResult> validationResults) {
+            fragmentValidationResults = validationResults;
             return this;
         }
 

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ParsingParameters {
     List<String> referenceQueries;
     Map<String,List<String>> typos;
-    Map<String,String> codeFragments;
+    List<CodeFragment> codeFragments;
     List<String> usedColumns;
     List<String> usedTables;
 
@@ -23,7 +23,7 @@ public class ParsingParameters {
         return typos;
     }
 
-    public Map<String, String> getCodeFragments() {
+    public List<CodeFragment> getCodeFragments() {
         return codeFragments;
     }
 
