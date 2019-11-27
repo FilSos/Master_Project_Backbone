@@ -37,7 +37,7 @@ public class SqlDissecter {
 
     private List<QueryData> executeOnDb(List<QueryData> validated) {
         return validated.stream()
-                .filter(QueryData::isValid)
+                .filter(query -> query.isValid() || query.isRef())
                 .map(query -> queryExecuter.execute(query))
                 .collect(Collectors.toList());
     }
@@ -49,6 +49,10 @@ public class SqlDissecter {
     }
 
     private QueryData validateQuery(QueryData query) {
+        QueryData queryData = detectTypos(query);
+        if (queryData.getTypos() > 0) {
+            return validateQuery(queryData);
+        }
         List<FragmentValidationResult> fragmentValidationResults = getFragmentValidationResults(query);
         try {
             Statement statement = CCJSqlParserUtil.parse(query.getQueryString());
@@ -66,23 +70,19 @@ public class SqlDissecter {
                     .build();
 
         } catch (JSQLParserException e) {
-            QueryData queryData = detectTypos(query);
-            if (queryData.getTypos() > 0) {
-                return validateQuery(queryData);
+            query.setValid(false);
+            if (query.getQueryString().trim().equals("-")) {
+                System.out.println("Zadanie puste");
             } else {
-                query.setValid(false);
-                if(query.getQueryString().trim().equals("-")) {
-                    System.out.println("Zadanie puste");
-                }else {
-                    e.printStackTrace();
-                }
-                return QueryData.newBuilder(query)
-                        .withIsValid(false)
-                        .withFragmentValidationResults(fragmentValidationResults)
-                        .build();
+                e.printStackTrace();
             }
+            return QueryData.newBuilder(query)
+                    .withIsValid(false)
+                    .withFragmentValidationResults(fragmentValidationResults)
+                    .build();
         }
     }
+
 
     private List<FragmentValidationResult> getFragmentValidationResults(QueryData query) {
         String queryString = query.getQueryString();
@@ -93,18 +93,22 @@ public class SqlDissecter {
     }
 
     private QueryData detectTypos(QueryData queryData) {
-        String stringToCheck = queryData.getQueryString();
+        //TODO: needs sth more advanced to check cases like typo SELEC(SELECT)/UPDAT(UPDATE)/SERT(INSERT).
+        // This cases cannot be handled by simple contains. Proposed: split string by spaces and search typos in created that way tokens.
+        // After all fixes, recreate string.
+
+        String stringToCheck = queryData.getQueryString().toLowerCase();
         Multimap<String, String> typoMap = parsingParameters.getTyposAsMultimap();
         int numberOfTypos = 0;
 
         for (String typo : typoMap.values()) {
-            if (stringToCheck.contains(typo)) {
+            if (stringToCheck.contains(typo.toLowerCase())) {
                 String fixer = typoMap.entries().stream()
-                        .filter(entry -> entry.getValue().equals(typo))
+                        .filter(entry -> entry.getValue().equalsIgnoreCase(typo))
                         .findFirst()
                         .get()
                         .getKey();
-                stringToCheck = stringToCheck.replaceAll(typo, fixer);
+                stringToCheck = stringToCheck.replaceAll(typo.toLowerCase(), fixer.toLowerCase());
                 numberOfTypos++;
             }
         }

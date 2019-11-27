@@ -4,26 +4,14 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.StatementVisitor;
-import net.sf.jsqlparser.statement.Statements;
-import net.sf.jsqlparser.statement.alter.Alter;
-import net.sf.jsqlparser.statement.create.index.CreateIndex;
-import net.sf.jsqlparser.statement.create.table.CreateTable;
-import net.sf.jsqlparser.statement.create.view.CreateView;
 import net.sf.jsqlparser.statement.delete.Delete;
-import net.sf.jsqlparser.statement.drop.Drop;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.replace.Replace;
-import net.sf.jsqlparser.statement.select.Join;
-import net.sf.jsqlparser.statement.select.Select;
-import net.sf.jsqlparser.statement.select.WithItem;
-import net.sf.jsqlparser.statement.truncate.Truncate;
+import net.sf.jsqlparser.statement.select.*;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.util.TablesNamesFinder;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ColumnNamesFinder extends TablesNamesFinder {
@@ -104,6 +92,36 @@ public class ColumnNamesFinder extends TablesNamesFinder {
         }
 
         return tableColumns;
+    }
+
+    @Override
+    public void visit(PlainSelect plainSelect) {
+        if (plainSelect.getSelectItems() != null) {
+            for (SelectItem item : plainSelect.getSelectItems()) {
+                item.accept(this);
+            }
+        }
+
+        if (plainSelect.getFromItem() != null) {
+            plainSelect.getFromItem().accept(this);
+        }
+
+        if (plainSelect.getJoins() != null) {
+            for (Join join : plainSelect.getJoins()) {
+                join.getOnExpression().accept(this);
+            }
+        }
+        if (plainSelect.getWhere() != null) {
+            plainSelect.getWhere().accept(this);
+        }
+
+        if (plainSelect.getHaving() != null) {
+            plainSelect.getHaving().accept(this);
+        }
+
+        if (plainSelect.getOracleHierarchical() != null) {
+            plainSelect.getOracleHierarchical().accept(this);
+        }
     }
 
     @Override
