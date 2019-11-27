@@ -185,7 +185,7 @@ public class Main implements Initializable {
             try (FileReader reader = new FileReader(queryFile)) {
                 List<QueryDataSet> queryDataSets = extractData(reader);
                 dataMap.putAll(getMap(queryDataSets));
-                List<QueryData> queryData = new ArrayList<>(dataMap.values()).get(0);
+                List<QueryData> queryData = new ArrayList<>(dataMap.values()).stream().flatMap(Collection::stream).collect(Collectors.toList());
                 resultList.addAll(sqlDissecter.evaluateQueries(queryData, parsingParameters));
             } catch (IOException | ParseException e) {
                 e.printStackTrace();

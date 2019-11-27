@@ -14,18 +14,18 @@ public class QueryData {
     boolean isRef; // czy jest referencyjny, tj oznaczenie przykladu
     List result; // wynik wykonania na bazie
     int typos; //miejsce na spisanie literowek
-    Integer score; //ocena
+    Double score; //ocena koncowa
     int exNumber; //numerZadania
     double matchedColumns; //liczba uzytych kolumn z pliku parametrow
     double matchedTables; //liczba uzytych tabel z pliku parametrow
-    List<FragmentValidationResult> fragmentValidationResults;
+    List<FragmentValidationResult> fragmentValidationResults; //fragmenty ktore zostaly sprawdzone i wyniki poprawnosci
 
     public QueryData(String queryString, String identifier, boolean isRef, int exNumber) {
         this.queryString = queryString.toLowerCase().trim();
         this.identifier = identifier;
         this.isRef = isRef;
         this.typos = 0;
-        this.score = 0;
+        this.score = 0.0;
         this.exNumber = exNumber;
         this.matchedColumns = 0.0;
         this.matchedTables = 0.0;
@@ -124,11 +124,11 @@ public class QueryData {
         this.typos = typos;
     }
 
-    public Integer getScore() {
+    public Double getScore() {
         return score;
     }
 
-    public void setScore(Integer score) {
+    public void setScore(Double score) {
         this.score = score;
     }
 
@@ -172,7 +172,7 @@ public class QueryData {
         private boolean isRef;
         private List result;
         private int typos;
-        private Integer score;
+        private Double score;
         private int exNumber;
         private double matchedColumns;
         private double matchedTables;
@@ -211,7 +211,7 @@ public class QueryData {
             return this;
         }
 
-        public Builder withScore(Integer val) {
+        public Builder withScore(Double val) {
             score = val;
             return this;
         }

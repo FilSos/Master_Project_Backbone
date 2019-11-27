@@ -9,11 +9,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ParsingParameters {
+
     List<String> referenceQueries;
     Map<String,List<String>> typos;
     List<CodeFragment> codeFragments;
     List<String> usedColumns;
     List<String> usedTables;
+    Weights weights;
 
     public List<String> getReferenceQueriesText() {
         return referenceQueries;
@@ -47,5 +49,7 @@ public class ParsingParameters {
         return usedTables;
     }
 
-
+    public Weights getWeights() {
+        return weights;
+    }
 }

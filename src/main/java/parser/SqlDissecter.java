@@ -6,14 +6,9 @@ import model.ParsingParameters;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.util.TablesNamesFinder;
 import query.QueryData;
-import visitors.ColumnNamesFinder;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SqlDissecter {
@@ -21,13 +16,23 @@ public class SqlDissecter {
     private QueryExecuter queryExecuter = new QueryExecuter();
     private QueryFragmentValidator queryFragmentValidator = new QueryFragmentValidator();
     private ParsingParameters parsingParameters;
+    private QueryScorer queryScorer = new QueryScorer();
+    private TableColumnMatcher tableColumnMatcher;
 
     public List<QueryData> evaluateQueries(List<QueryData> queries, ParsingParameters parsingParameters) {
         this.parsingParameters = parsingParameters;
+        this.tableColumnMatcher = new TableColumnMatcher(parsingParameters);
+
         List<QueryData> validated = validateQueries(queries);
         List<QueryData> executed = executeOnDb(validated);
-        executed.addAll(validated.stream().filter(query -> !query.isValid()).collect(Collectors.toList()));
-        return scoreQuery(printReport(executed));
+
+        executed.addAll(validated.stream()
+                .filter(query -> !query.isValid())
+                .collect(Collectors.toList()));
+
+        List<QueryData> references = executeOnDb(parsingParameters.getReferenceQueries());
+
+        return scoreQuery(executed, references);
     }
 
     private List<QueryData> executeOnDb(List<QueryData> validated) {
@@ -44,11 +49,12 @@ public class SqlDissecter {
     }
 
     private QueryData validateQuery(QueryData query) {
+        List<FragmentValidationResult> fragmentValidationResults = getFragmentValidationResults(query);
         try {
             Statement statement = CCJSqlParserUtil.parse(query.getQueryString());
-            double tableMatches = getTableMatches(query, statement);
-            double columnsMatches = getColumnsMatches(query,statement);
-            List<FragmentValidationResult> fragmentValidationResults = getFragmentValidationResults(query);
+
+            double tableMatches = tableColumnMatcher.getTableMatches(query, statement);
+            double columnsMatches = tableColumnMatcher.getColumnsMatches(query, statement);
 
             System.out.println("Dobre:" + statement);
             return QueryData.newBuilder(query)
@@ -72,6 +78,7 @@ public class SqlDissecter {
                 }
                 return QueryData.newBuilder(query)
                         .withIsValid(false)
+                        .withFragmentValidationResults(fragmentValidationResults)
                         .build();
             }
         }
@@ -83,47 +90,6 @@ public class SqlDissecter {
                 .filter(codeFragment -> codeFragment.getExNumber() == query.getExNumber())
                 .map(fragment -> queryFragmentValidator.checkSimilarity(fragment, queryString))
                 .collect(Collectors.toList());
-    }
-
-    private double getTableMatches(QueryData query, Statement statement) {
-        TablesNamesFinder tablesNamesFinder = new TablesNamesFinder();
-        Set<String> tableList = new HashSet<>(tablesNamesFinder.getTableList(statement));
-        tableList = normalizeNames(tableList);
-        String[] split = parsingParameters.getUsedTables().get(query.getExNumber()).split(",");
-        int matches = 0;
-        for(String table : split){
-            if(tableList.contains(table.toLowerCase().trim())){
-                matches++;
-            }
-        }
-        return (double)matches/split.length;
-    }
-
-    private double getColumnsMatches(QueryData query, Statement statement) {
-        ColumnNamesFinder columnNamesFinder = new ColumnNamesFinder();
-        Set<String> tableColumns = columnNamesFinder.getTableColumns(statement);
-        tableColumns = normalizeNames(tableColumns);
-        String[] split = parsingParameters.getUsedColumns().get(query.getExNumber()).split(",");
-        int matches = 0;
-        for(String column : split){
-            if(tableColumns.contains(column.trim().toLowerCase())){
-                matches++;
-            }
-        }
-        return (double)matches/split.length;
-    }
-
-    private Set<String> normalizeNames(Set<String> strings) {
-        return strings.stream()
-                .map(this::deletePrefix)
-                .collect(Collectors.toSet());
-    }
-
-    private String deletePrefix(String name){
-        if(name.contains(".")){
-            return name.split("\\.")[1];
-        }
-        return name;
     }
 
     private QueryData detectTypos(QueryData queryData) {
@@ -148,7 +114,13 @@ public class SqlDissecter {
                 .build();
     }
 
-    private Map<Boolean, List<QueryData>> printReport(List<QueryData> queries) {
+    private List<QueryData> scoreQuery(List<QueryData> queries, List<QueryData> references) {
+        return queries.stream()
+                .map(queryData -> queryScorer.evaluate(queryData, parsingParameters.getWeights(), references))
+                .collect(Collectors.toList());
+    }
+
+   /* private Map<Boolean, List<QueryData>> printReport(List<QueryData> queries) {
         QueryData referenceResult = queries.stream()
                 .findFirst()
                 .get();
@@ -174,7 +146,7 @@ public class SqlDissecter {
                 .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));
     }
 
-    private List<QueryData> scoreQuery(Map<Boolean, List<QueryData>> queries) {
+    /*private List<QueryData> scoreQuery(Map<Boolean, List<QueryData>> queries) {
         List<QueryData> correct = queries.get(true)
                 .stream()
                 .map(query -> QueryData.newBuilder(query).withScore(100 - (query.getTypos() * 5)).build())
@@ -186,6 +158,6 @@ public class SqlDissecter {
 
         correct.addAll(failed);
         return correct;
-    }
+    }*/
 
 }
