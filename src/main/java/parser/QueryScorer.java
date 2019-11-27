@@ -19,14 +19,15 @@ public class QueryScorer {
 
         double finalScore = queryData.getMatchedColumns() * weights.getUsedColumns() +
                 queryData.getMatchedTables() * weights.getUsedTables() +
-                queryData.getTypos() * weights.getTypos() +
                 scoreCodeFragments(queryData.getFragmentValidationResults()) * weights.getCodeFragments();
+
 
         if (refData.isPresent()) {
             if (queryExecuter.compareResults(refData.get().getResult(), queryData.getResult())) {
                 finalScore += 1 * weights.getRefQueries();
             }
         }
+        finalScore = finalScore - queryData.getTypos() * weights.getTypos();
 
         return QueryData.newBuilder(queryData)
                 .withScore(finalScore)
