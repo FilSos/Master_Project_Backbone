@@ -70,19 +70,20 @@ public class SqlDissecter {
                     .build();
 
         } catch (JSQLParserException e) {
-            query.setValid(false);
-            if (query.getQueryString().trim().equals("-")) {
+            String errorMessage = "Error during parsing: " + e.getMessage();
+            if (query.getQueryString().trim().equals("-") || query.getQueryString().trim().isEmpty()) {
                 System.out.println("Zadanie puste");
+                errorMessage = "Error during parsing: No valid query";
             } else {
                 e.printStackTrace();
             }
             return QueryData.newBuilder(query)
                     .withIsValid(false)
+                    .withErrorReason(errorMessage)
                     .withFragmentValidationResults(fragmentValidationResults)
                     .build();
         }
     }
-
 
     private List<FragmentValidationResult> getFragmentValidationResults(QueryData query) {
         String queryString = query.getQueryString();

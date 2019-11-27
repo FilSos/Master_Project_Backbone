@@ -18,7 +18,9 @@ public class QueryData {
     int exNumber; //numerZadania
     double matchedColumns; //liczba uzytych kolumn z pliku parametrow
     double matchedTables; //liczba uzytych tabel z pliku parametrow
+    double resultMatchScore; //stopien zgodnosci wyniku z zapytaniem referencyjnym
     List<FragmentValidationResult> fragmentValidationResults; //fragmenty ktore zostaly sprawdzone i wyniki poprawnosci
+    String errorReason; //message z exceptiona ktory polecial jak zapytanie jest niepoprawne
 
     public QueryData(String queryString, String identifier, boolean isRef, int exNumber) {
         this.queryString = queryString.toLowerCase().trim();
@@ -31,6 +33,7 @@ public class QueryData {
         this.matchedTables = 0.0;
         this.result = new ArrayList();
         this.fragmentValidationResults = new ArrayList<>();
+        this.resultMatchScore = 0.0;
     }
 
     private QueryData(Builder builder) {
@@ -46,6 +49,8 @@ public class QueryData {
         setMatchedColumns(builder.matchedColumns);
         setMatchedTables(builder.matchedTables);
         setFragmentValidationResults(builder.fragmentValidationResults);
+        setResultMatchScore(builder.resultMatchScore);
+        setErrorReason(builder.errorReason);
     }
 
     public static Builder newBuilder() {
@@ -65,6 +70,8 @@ public class QueryData {
         builder.matchedTables = copy.getMatchedTables();
         builder.matchedColumns = copy.getMatchedColumns();
         builder.fragmentValidationResults = copy.getFragmentValidationResults();
+        builder.resultMatchScore = copy.getResultMatchScore();
+        builder.errorReason = copy.getErrorReason();
         return builder;
     }
 
@@ -164,6 +171,22 @@ public class QueryData {
         return fragmentValidationResults;
     }
 
+    public double getResultMatchScore() {
+        return resultMatchScore;
+    }
+
+    public void setResultMatchScore(double resultMatchScore) {
+        this.resultMatchScore = resultMatchScore;
+    }
+
+    public String getErrorReason() {
+        return errorReason;
+    }
+
+    public void setErrorReason(String errorReason) {
+        this.errorReason = errorReason;
+    }
+
     public static final class Builder {
         private String identifier;
         private String queryString;
@@ -176,7 +199,9 @@ public class QueryData {
         private int exNumber;
         private double matchedColumns;
         private double matchedTables;
+        private double resultMatchScore;
         List<FragmentValidationResult> fragmentValidationResults;
+        String errorReason;
 
         private Builder() {
         }
@@ -188,6 +213,11 @@ public class QueryData {
 
         public Builder withQueryString(String val) {
             queryString = val.toLowerCase().trim();
+            return this;
+        }
+
+        public Builder withErrorReason(String val) {
+            errorReason = val;
             return this;
         }
 
@@ -233,6 +263,11 @@ public class QueryData {
 
         public Builder withTableMatched(double val) {
             matchedTables = val;
+            return this;
+        }
+
+        public Builder withResultMatchScore(double val) {
+            resultMatchScore = val;
             return this;
         }
 

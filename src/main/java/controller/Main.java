@@ -152,7 +152,6 @@ public class Main implements Initializable {
     }
 
     public void btnProgramStartClick() throws IOException {
-        //TODO Dołożyłem plik z parametrami(parametersFile). Dostosuj sobie jak chcesz czytać jeden i drugi
         System.out.println("Wystartuj program");
         if (queryFiles != null && parametersFile != null) {
             cfg.buildSessionFactory();
