@@ -35,6 +35,7 @@ public class ColumnNamesFinder extends TablesNamesFinder {
         delete.getWhere().accept(this);
         return tableColumns;
     }
+
     public Set<String> getTableColumns(Insert insert) {
         tableColumns = new HashSet<>();
         insert.getTable().accept(this);
@@ -43,6 +44,7 @@ public class ColumnNamesFinder extends TablesNamesFinder {
         }
         return tableColumns;
     }
+
     public Set<String> getTableColumns(Replace replace) {
         tableColumns = new HashSet<>();
         if (replace.getExpressions() != null) {
@@ -68,6 +70,7 @@ public class ColumnNamesFinder extends TablesNamesFinder {
 
         return tableColumns;
     }
+
     public Set<String> getTableColumns(Update update) {
         tableColumns = new HashSet<>();
         update.getTable().accept(this);
@@ -108,7 +111,12 @@ public class ColumnNamesFinder extends TablesNamesFinder {
 
         if (plainSelect.getJoins() != null) {
             for (Join join : plainSelect.getJoins()) {
-                join.getOnExpression().accept(this);
+                if (join.getOnExpression() != null) {
+                    join.getOnExpression().accept(this);
+                }
+                if (join.getUsingColumns() != null) {
+                    join.getUsingColumns().forEach(column -> column.accept(this));
+                }
             }
         }
         if (plainSelect.getWhere() != null) {

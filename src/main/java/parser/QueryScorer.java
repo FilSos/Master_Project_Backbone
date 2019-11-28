@@ -39,10 +39,12 @@ public class QueryScorer {
     private double scoreCodeFragments(List<FragmentValidationResult> fragmentValidationResults) {
         double jaroWinklerSimilarityAverage = fragmentValidationResults.stream()
                 .mapToDouble(FragmentValidationResult::getJaroWinklerSimilarity)
-                .average().getAsDouble();
+                .average()
+                .orElse(0.0);
         double overlapCoefficientAverage = fragmentValidationResults.stream()
                 .mapToDouble(FragmentValidationResult::getOverlapCoefficient)
-                .average().getAsDouble();
+                .average()
+                .orElse(0.0);
 
         return (jaroWinklerSimilarityAverage + overlapCoefficientAverage) / 2;
     }
