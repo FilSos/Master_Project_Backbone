@@ -30,7 +30,10 @@ public class SqlDissecter {
                 .filter(query -> !query.isValid())
                 .collect(Collectors.toList()));
 
-        List<QueryData> references = executeOnDb(parsingParameters.getReferenceQueries());
+        List<QueryData> references = parsingParameters.getReferenceQueries().stream()
+                .map(this::validateQuery)
+                .map(queryData -> queryExecuter.execute(queryData))
+                .collect(Collectors.toList());
 
         return scoreQuery(executed, references);
     }

@@ -2,11 +2,13 @@ package parser;
 
 import com.google.gson.Gson;
 import controller.HibernateUtil;
+import net.sf.jsqlparser.statement.select.Select;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.NativeQuery;
 import query.QueryData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QueryExecuter {
@@ -14,9 +16,14 @@ public class QueryExecuter {
     public QueryData execute(QueryData queryData) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         Transaction transaction = session.beginTransaction();
+        List queryReturns = new ArrayList();
         try {
             NativeQuery sqlQuery = session.createSQLQuery(queryData.getQueryString());
-            List queryReturns = sqlQuery.list();
+            if (queryData.getStatement() instanceof Select) {
+                queryReturns = sqlQuery.list();
+            } else {
+                sqlQuery.executeUpdate();
+            }
             transaction.rollback();
 
             return QueryData.newBuilder(queryData)
@@ -27,7 +34,7 @@ public class QueryExecuter {
             transaction.rollback();
             return QueryData.newBuilder(queryData)
                     .withIsValid(false)
-                    .withErrorReason("Error while executing on DB: " + e.getMessage())
+                    .withErrorReason("Error while executing on DB: " + e.getCause().getCause().getMessage())
                     .withResultMatchScore(0)
                     .build();
         }
