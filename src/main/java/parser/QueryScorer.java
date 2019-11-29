@@ -17,10 +17,9 @@ public class QueryScorer {
                 .filter(reference -> reference.getExNumber() == queryData.getExNumber())
                 .findFirst();
 
-        double finalScore = queryData.getMatchedColumns() * weights.getUsedColumns() +
+        double finalScore = Math.floor(queryData.getMatchedColumns() * weights.getUsedColumns() +
                 queryData.getMatchedTables() * weights.getUsedTables() +
-                scoreCodeFragments(queryData.getFragmentValidationResults()) * weights.getCodeFragments();
-
+                scoreCodeFragments(queryData.getFragmentValidationResults()) * weights.getCodeFragments()*100);
         double referenceMatchScore = 0;
         if (refData.isPresent()) {
             if (queryExecuter.compareResults(refData.get().getResult(), queryData.getResult())) {

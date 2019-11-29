@@ -14,10 +14,19 @@ import query.QueryData;
 import java.net.URL;
 import java.util.*;
 
-import static view.Main.mainController;
 
 public class Result implements Initializable {
 
+    private static TableColumn index = new TableColumn("Student");
+    private static TableColumn exNumber = new TableColumn("Numer zadania");
+    private static TableColumn queryString = new TableColumn("Zapytanie");
+    private static TableColumn<QueryData, Boolean> parsed = new TableColumn("Czy parsowanie się udało");
+    private static TableColumn matchedColumns = new TableColumn("Zgodność kolumn");
+    private static TableColumn matchedTables = new TableColumn("Zgodność tabeli");
+    private static TableColumn resultMatchScore = new TableColumn("Zgodność z zapytaniem referencyjnym");
+    private static TableColumn typos = new TableColumn("Literówki");
+    private static TableColumn result = new TableColumn("Poprawność %");
+    private static ObservableList<QueryData> items = null;
 
     @FXML
     public TableView<QueryData> resultList;
@@ -25,17 +34,16 @@ public class Result implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         resultList.setEditable(true);
-
-        TableColumn index = new TableColumn("Numer indeksu");
-        TableColumn queryString = new TableColumn("Zapytanie");
-        TableColumn<QueryData, Boolean> parsed = new TableColumn("Czy parsowanie się udało");
         parsed.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isValid()));
-        TableColumn typos = new TableColumn("Literówki");
-        TableColumn result = new TableColumn("Poprawność %");
-        resultList.getColumns().addAll(index, queryString, parsed, typos, result);
-        List<QueryData> resultList = mainController.resultList;
-        ObservableList<QueryData> items = FXCollections.observableArrayList(resultList);
+        resultList.getColumns().addAll(index, exNumber, queryString, parsed, matchedColumns, matchedTables, resultMatchScore, typos, result);
+        this.resultList.setItems(items);
+    }
+
+    public static void showResultTable(List<QueryData> resultList) {
+
+        items = FXCollections.observableArrayList(resultList);
         index.setCellValueFactory(new PropertyValueFactory<QueryData, String>("identifier"));
+        exNumber.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("exNumber"));
         queryString.setCellValueFactory(new PropertyValueFactory<QueryData, String>("queryString"));
         parsed.setCellFactory(col -> new TableCell<QueryData, Boolean>() {
             @Override
@@ -44,9 +52,10 @@ public class Result implements Initializable {
                 setText(empty ? null : item ? "Tak" : "Nie");
             }
         });
+        matchedColumns.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("matchedColumns"));
+        matchedTables.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("matchedTables"));
+        resultMatchScore.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("resultMatchScore"));
         typos.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("typos"));
         result.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("score"));
-
-        this.resultList.setItems(items);
     }
 }

@@ -2,6 +2,7 @@ package controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import converter.ExcelImport;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -56,14 +57,13 @@ public class Main implements Initializable {
     public Button btnAddBase;
 
     private List<File> queryFiles = null;
-    private ArrayList<String> fileNames = new ArrayList<>();
+    public ArrayList<String> fileNames = null;
     private File parametersFile = null;
     private JSONParser jsonParser = new JSONParser();
     private Gson gson = new Gson();
     private SqlDissecter sqlDissecter = new SqlDissecter();
 
-    List<QueryData> resultList = new ArrayList<>();
-
+    List<List<QueryData>> resultLists = null;
     private Configuration cfg;
 
     void addDbToCombobox(model.Base base) {
@@ -153,21 +153,23 @@ public class Main implements Initializable {
 
     public void btnProgramStartClick() throws IOException {
         System.out.println("Wystartuj program");
-        if (queryFiles != null && parametersFile != null) {
+        if (queryFiles != null && parametersFile != null && baseList.getSelectionModel().getSelectedItem() != null) {
             cfg.buildSessionFactory();
-
-            Map<QueryDataSet, List<QueryData>> dataMap = new HashMap<>();
-
-            scoreQueries(dataMap,  extractParams());
-
-            showResults();
+            resultLists = new ArrayList<>();
+            scoreQueries(extractParams());
+            System.out.println("Pokaz wyniki");
+            for (List<QueryData> resultList : resultLists) {
+                showResults(resultList);
+                ExcelImport.doImport(resultList);
+            }
 
         } else {
-            startProgramStatus.setText("Nie wybrano pliku z zapytaniami i/lub parametrami!");
+            startProgramStatus.setText("Brakuje plików lub nie wybrano bazy!");
         }
     }
 
-    private void showResults() throws IOException {
+    private void showResults(List<QueryData> resultList) throws IOException {
+        Result.showResultTable(resultList);
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("result.fxml")));
         primaryStage.setTitle("Wynik");
@@ -177,15 +179,19 @@ public class Main implements Initializable {
         primaryStage.setScene(scene);
         // primaryStage.initModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
+
     }
 
-    private void scoreQueries(Map<QueryDataSet, List<QueryData>> dataMap, ParsingParameters parsingParameters) {
-        for (File queryFile :queryFiles) {
+    private void scoreQueries(ParsingParameters parsingParameters) {
+        for (File queryFile : queryFiles) {
+            Map<QueryDataSet, List<QueryData>> dataMap = new HashMap<>();
             try (FileReader reader = new FileReader(queryFile)) {
+                List<QueryData> resultList = new ArrayList<>();
                 List<QueryDataSet> queryDataSets = extractData(reader);
                 dataMap.putAll(getMap(queryDataSets));
                 List<QueryData> queryData = new ArrayList<>(dataMap.values()).stream().flatMap(Collection::stream).collect(Collectors.toList());
                 resultList.addAll(sqlDissecter.evaluateQueries(queryData, parsingParameters));
+                resultLists.add(resultList);
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
             }
@@ -194,7 +200,7 @@ public class Main implements Initializable {
 
     private ParsingParameters extractParams() throws IOException {
         ParsingParameters parameters;
-        try(FileReader reader = new FileReader(parametersFile)){
+        try (FileReader reader = new FileReader(parametersFile)) {
             parameters = gson.fromJson(reader, ParsingParameters.class);
         }
         return parameters;
@@ -212,7 +218,7 @@ public class Main implements Initializable {
         Map<QueryDataSet, List<QueryData>> dataMap = new HashMap<>();
         for (QueryDataSet dataSet : queryDataSets) {
             List<QueryData> queryDataList = dataSet.getExcercises().stream()
-                    .map(exercise -> mapToQueryData(exercise, dataSet.getEmail(),dataSet.getExcercises().indexOf(exercise)))
+                    .map(exercise -> mapToQueryData(exercise, dataSet.getEmail(), dataSet.getExcercises().indexOf(exercise)))
                     .collect(Collectors.toList());
             dataMap.put(dataSet, queryDataList);
         }
@@ -220,13 +226,16 @@ public class Main implements Initializable {
     }
 
     private QueryData mapToQueryData(String string, String id, int exNumber) {
-        if(id.equals("reference")){
-            return new QueryData(string,id,true, exNumber);
+        if (id.equals("reference")) {
+            return new QueryData(string, id, true, exNumber);
         }
         return new QueryData(string, id, false, exNumber);
     }
 
     public void btnAddFileClick() {
+        queryFiles = null;
+        fileNames = new ArrayList<>();
+        csvStatus.setText("");
         System.out.println("Dodaj pliki z zapytaniami");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
@@ -245,8 +254,8 @@ public class Main implements Initializable {
             for (String name : fileNames) {
                 filesSelected.append(name).append("\n");
             }
-            csvStatus.setText("Wybrano: " + filesSelected);
-            System.out.println("Wybrano: " + filesSelected);
+            csvStatus.setText("Wybranych plików z zapytaniami: " + queryFiles.size());
+            System.out.println("Wybranych plików z zapytaniami: " + queryFiles.size());
         } else {
             csvStatus.setText("Nie wybrano żadnego pliku z zapytaniami");
             System.out.println("Nie wybrano żadnego pliku z zapytaniami");
@@ -254,6 +263,8 @@ public class Main implements Initializable {
     }
 
     public void btnAddParametersClick() {
+        parametersFile = null;
+        parametersFileStatus.setText("");
         System.out.println("Dodaj plik z parametrami");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
@@ -262,8 +273,8 @@ public class Main implements Initializable {
                 new FileChooser.ExtensionFilter("csv files", "*.csv"));
         parametersFile = fileChooser.showOpenDialog(null);
         if (parametersFile != null) {
-            parametersFileStatus.setText("Wybrano: " + parametersFile.getName());
-            System.out.println("Wybrano: " + parametersFile.getName());
+            parametersFileStatus.setText("Plik parametrów: " + parametersFile.getName());
+            System.out.println("Plik parametrów: " + parametersFile.getName());
         } else {
             parametersFileStatus.setText("Nie wybrano żadnego pliku z parametrami");
             System.out.println("Nie wybrano żadnego pliku z parametrami");
