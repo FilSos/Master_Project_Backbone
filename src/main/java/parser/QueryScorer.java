@@ -21,7 +21,7 @@ public class QueryScorer {
                 queryData.getMatchedTables() * weights.getUsedTables() +
                 scoreCodeFragments(queryData.getFragmentValidationResults()) * weights.getCodeFragments()*100);
         double referenceMatchScore = 0;
-        if (refData.isPresent()) {
+        if (refData.isPresent() && queryData.getResult() != null && !queryData.getResult().isEmpty()) {
             if (queryExecuter.compareResults(refData.get().getResult(), queryData.getResult())) {
                 finalScore += 1 * weights.getRefQueries();
                 referenceMatchScore = 1;
