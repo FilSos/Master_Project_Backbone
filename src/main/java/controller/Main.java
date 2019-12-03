@@ -62,6 +62,7 @@ public class Main implements Initializable {
     private JSONParser jsonParser = new JSONParser();
     private Gson gson = new Gson();
     private SqlDissecter sqlDissecter = new SqlDissecter();
+    private String programPath = System.getProperty("user.dir");
 
     List<List<QueryData>> resultLists = null;
     private Configuration cfg;
@@ -84,7 +85,7 @@ public class Main implements Initializable {
         if (null == dbName) {
             dbName = baseList.getSelectionModel().getSelectedItem().getName();
         }
-        File dir = new File("src/main/resources/" + dbName + ".properties");
+        File dir = new File(programPath + dbName + ".properties");
         if (dir.delete()) {
             baseList.getItems().remove(selectedItem);
             System.out.println(dbName + " deleted from list");
@@ -109,7 +110,7 @@ public class Main implements Initializable {
                 return null;
             }
         });
-        File dir = new File("src/main/resources/");
+        File dir = new File(programPath);
 
         File[] propertyFiles = dir.listFiles((dir1, name) -> name.endsWith(".properties"));
         if (propertyFiles != null) {

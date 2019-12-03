@@ -38,6 +38,8 @@ public class Base implements Initializable {
     @FXML
     public Label dbNameError;
 
+    private String programPath = System.getProperty("user.dir");
+
     private boolean isUsed;
 
     private ArrayList<DbData> dbDataList = new ArrayList<>();
@@ -140,7 +142,7 @@ public class Base implements Initializable {
 
             }
 
-            try (OutputStream output = new FileOutputStream("src/main/resources/" + dbName + ".properties")) {
+            try (OutputStream output = new FileOutputStream(programPath + dbName + ".properties")) {
                 Properties prop = new Properties();
                 prop.setProperty("db.name", dbName);
                 prop.setProperty("db.dialect", dialect);
