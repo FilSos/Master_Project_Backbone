@@ -85,7 +85,7 @@ public class Main implements Initializable {
         if (null == dbName) {
             dbName = baseList.getSelectionModel().getSelectedItem().getName();
         }
-        File dir = new File(programPath + dbName + ".properties");
+        File dir = new File(programPath + "/" + dbName + ".properties");
         if (dir.delete()) {
             baseList.getItems().remove(selectedItem);
             System.out.println(dbName + " deleted from list");
@@ -110,7 +110,7 @@ public class Main implements Initializable {
                 return null;
             }
         });
-        File dir = new File(programPath);
+        File dir = new File("/" + programPath);
 
         File[] propertyFiles = dir.listFiles((dir1, name) -> name.endsWith(".properties"));
         if (propertyFiles != null) {
