@@ -142,7 +142,7 @@ public class Base implements Initializable {
 
             }
 
-            try (OutputStream output = new FileOutputStream(programPath + dbName + ".properties")) {
+            try (OutputStream output = new FileOutputStream(programPath + "/" + dbName + ".properties")) {
                 Properties prop = new Properties();
                 prop.setProperty("db.name", dbName);
                 prop.setProperty("db.dialect", dialect);
