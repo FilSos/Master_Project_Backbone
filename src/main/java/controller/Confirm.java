@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static view.Main.mainController;
+import static view.Start.mainController;
 
 public class Confirm implements Initializable {
 

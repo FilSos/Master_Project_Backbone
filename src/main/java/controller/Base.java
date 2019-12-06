@@ -18,7 +18,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static view.Main.mainController;
+import static view.Start.mainController;
 
 
 public class Base implements Initializable {
