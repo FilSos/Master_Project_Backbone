@@ -3,6 +3,7 @@ package controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import converter.ExcelImport;
+import converter.JarPathConverter;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,7 @@ import query.QueryData;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,10 +64,13 @@ public class Main implements Initializable {
     private JSONParser jsonParser = new JSONParser();
     private Gson gson = new Gson();
     private SqlDissecter sqlDissecter = new SqlDissecter();
-    private String programPath = System.getProperty("user.dir");
+    private String programPath = JarPathConverter.getPathToResources();
 
     List<List<QueryData>> resultLists = null;
     private Configuration cfg;
+
+    public Main() throws URISyntaxException {
+    }
 
     void addDbToCombobox(model.Base base) {
         baseList.getItems().add(base);
@@ -78,7 +83,7 @@ public class Main implements Initializable {
         System.out.println("Dodano baze o nazwie: " + base.getName());
     }
 
-    void deleteDbFromCombobox(String dbName) {
+    void deleteDbFromCombobox(String dbName){
         btnDelete.setVisible(false);
         btnEdit.setVisible(false);
         Base selectedItem = baseList.getSelectionModel().getSelectedItem();
@@ -121,15 +126,13 @@ public class Main implements Initializable {
                     Properties p = new Properties();
                     p.load(reader);
                     model.Base base = new model.Base();
-                    String url = p.getProperty("db.url");
-                    String queryString = url.substring(url.indexOf("/") + 2);
                     base.setPassword(p.getProperty("db.password"));
-                    base.setUrl(url);
+                    base.setUrl(p.getProperty("db.url"));
                     base.setName(p.getProperty("db.name"));
                     base.setUsername(p.getProperty("db.username"));
                     base.setDriver(p.getProperty("db.driver"));
                     base.setDialect(p.getProperty("db.dialect"));
-                    base.setQueryString(queryString);
+                    base.setQueryString(p.getProperty("db.queryString"));
                     baseList.getItems().add(base);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -155,6 +158,9 @@ public class Main implements Initializable {
     public void btnProgramStartClick() throws IOException {
         System.out.println("Wystartuj program");
         if (queryFiles != null && parametersFile != null && baseList.getSelectionModel().getSelectedItem() != null) {
+            startProgramStatus.setText("");
+            String property = cfg.getProperties().getProperty("hibernate.connection.url");
+            System.out.println("Link: " + property);
             cfg.buildSessionFactory();
             resultLists = new ArrayList<>();
             scoreQueries(extractParams());
@@ -290,12 +296,13 @@ public class Main implements Initializable {
             String driver = baseList.getSelectionModel().getSelectedItem().getDriver();
             String dialect = baseList.getSelectionModel().getSelectedItem().getDialect();
             String url = baseList.getSelectionModel().getSelectedItem().getUrl();
+            String queryString = baseList.getSelectionModel().getSelectedItem().getQueryString();
             cfg = new Configuration();
             cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
             cfg.getProperties().setProperty("hibernate.connection.username", username);
             cfg.getProperties().setProperty("hibernate.connection.password", password);
             cfg.getProperties().setProperty("hibernate.connection.driver_class", driver);
-            cfg.getProperties().setProperty("hibernate.connection.url", url);
+            cfg.getProperties().setProperty("hibernate.connection.url", url + queryString);
             cfg.getProperties().setProperty("hibernate.dialect", dialect);
             System.out.println("Wybrano bazę " + dbName);
             btnDelete.setVisible(true);

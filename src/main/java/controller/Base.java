@@ -1,6 +1,7 @@
 package controller;
 
 import converter.DbDataConverter;
+import converter.JarPathConverter;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,6 +15,7 @@ import model.DbData;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -38,11 +40,14 @@ public class Base implements Initializable {
     @FXML
     public Label dbNameError;
 
-    private String programPath = System.getProperty("user.dir");
+    private String programPath = JarPathConverter.getPathToResources();
 
     private boolean isUsed;
 
     private ArrayList<DbData> dbDataList = new ArrayList<>();
+
+    public Base() throws URISyntaxException {
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -147,9 +152,10 @@ public class Base implements Initializable {
                 prop.setProperty("db.name", dbName);
                 prop.setProperty("db.dialect", dialect);
                 prop.setProperty("db.driver", driver);
-                prop.setProperty("db.url", url + queryString);
+                prop.setProperty("db.url", url);
                 prop.setProperty("db.username", username);
                 prop.setProperty("db.password", password);
+                prop.setProperty("db.queryString", queryString);
 
                 prop.store(output, null);
                 System.out.println(prop);
