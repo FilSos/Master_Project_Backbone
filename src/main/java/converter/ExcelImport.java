@@ -1,5 +1,7 @@
 package converter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -15,7 +17,11 @@ import java.util.List;
 
 import static view.Start.mainController;
 
+
 public class ExcelImport {
+
+    private static Logger logger = LogManager.getLogger(ExcelImport.class);
+
 
     private static List<Object[][]> dataRows = null;
 
@@ -52,7 +58,7 @@ public class ExcelImport {
 
         int rowNum = 0;
         for (String name : mainController.fileNames) {
-            System.out.println("Creating excel for " + name);
+            logger.info("Creating excel for " + name);
         }
         for (Object[][] oneRow : dataRows) {
 
@@ -83,6 +89,6 @@ public class ExcelImport {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Zrobione");
+        logger.info("Zrobione");
     }
 }

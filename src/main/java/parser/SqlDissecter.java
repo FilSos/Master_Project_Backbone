@@ -6,12 +6,18 @@ import model.ParsingParameters;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import query.QueryData;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class SqlDissecter {
+
+    private static Logger logger = LogManager.getLogger(SqlDissecter.class);
+
 
     private QueryExecuter queryExecuter = new QueryExecuter();
     private QueryFragmentValidator queryFragmentValidator = new QueryFragmentValidator();
@@ -63,7 +69,7 @@ public class SqlDissecter {
             double tableMatches = tableColumnMatcher.getTableMatches(query, statement);
             double columnsMatches = tableColumnMatcher.getColumnsMatches(query, statement);
 
-            System.out.println("Dobre:" + statement);
+            logger.info("Dobre:" + statement);
             return QueryData.newBuilder(query)
                     .withStatement(statement)
                     .withIsValid(true)
@@ -75,7 +81,7 @@ public class SqlDissecter {
         } catch (JSQLParserException e) {
             String errorMessage = "Error during parsing: " + e.getMessage();
             if (query.getQueryString().trim().equals("-") || query.getQueryString().trim().isEmpty()) {
-                System.out.println("Zadanie puste");
+                logger.error("Zadanie puste");
                 errorMessage = "Error during parsing: No valid query";
             } else {
                 e.printStackTrace();
@@ -138,15 +144,15 @@ public class SqlDissecter {
                 .filter(query -> !query.isRef())
                 .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));
 
-        System.out.println("----------------------------REPORT-----------------------------------------------");
-        System.out.println("Ref query: " + referenceResult.getQueryString());
-        System.out.println("------------------------VALID QUERIES--------------------------------------------");
+        logger.info("----------------------------REPORT-----------------------------------------------");
+        logger.info("Ref query: " + referenceResult.getQueryString());
+        logger.info("------------------------VALID QUERIES--------------------------------------------");
         validQueries.forEach((key, value) -> value.forEach(query -> System.out
                 .println("Query " + query.getQueryString() + " Identifier: " + query.getIdentifier() + " isCorrect: " + key)));
-        System.out.println("----------------------INVALID QUERIES--------------------------------------------");
+        logger.info("----------------------INVALID QUERIES--------------------------------------------");
         queries.stream()
                 .filter(queryData -> !queryData.isValid())
-                .forEach(queryData -> System.out.println(
+                .forEach(queryData -> logger.info(
                         "Failed to process query: " + queryData.getQueryString() + " it belongs to: " + queryData.getIdentifier()));
 
         return queries.stream()

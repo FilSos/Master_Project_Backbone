@@ -19,6 +19,8 @@ import javafx.util.StringConverter;
 import model.Base;
 import model.ParsingParameters;
 import model.QueryDataSet;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.cfg.Configuration;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
@@ -58,6 +60,9 @@ public class Main implements Initializable {
     @FXML
     public Button btnAddBase;
 
+    private static Logger logger = LogManager.getLogger(Main.class);
+
+
     private List<File> queryFiles = null;
     public ArrayList<String> fileNames = null;
     private File parametersFile = null;
@@ -76,11 +81,11 @@ public class Main implements Initializable {
         baseList.getItems().add(base);
         ObservableList<Base> items = baseList.getItems();
         for (Base b : items) {
-            System.out.println("pokaz:" + b.getName());
+            logger.info("pokaz:" + b.getName());
         }
 
-        System.out.println("wielkosc listy: " + items.size());
-        System.out.println("Dodano baze o nazwie: " + base.getName());
+        logger.info("wielkosc listy: " + items.size());
+        logger.info("Dodano baze o nazwie: " + base.getName());
     }
 
     void deleteDbFromCombobox(String dbName){
@@ -93,10 +98,10 @@ public class Main implements Initializable {
         File dir = new File(programPath + "/" + dbName + ".properties");
         if (dir.delete()) {
             baseList.getItems().remove(selectedItem);
-            System.out.println(dbName + " deleted from list");
-            System.out.println(dir.getName() + " file deleted from resources");
+            logger.info(dbName + " deleted from list");
+            logger.info(dir.getName() + " file deleted from resources");
         } else {
-            System.out.println(dir.getName() + " doesn't exist");
+            logger.info(dir.getName() + " doesn't exist");
         }
     }
 
@@ -143,7 +148,7 @@ public class Main implements Initializable {
     }
 
     public void btnAddBaseClick() throws IOException {
-        System.out.println("Dodaj baze");
+        logger.info("Dodaj baze");
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("base.fxml")));
         primaryStage.setTitle("Dodaj bazę danych");
@@ -156,15 +161,15 @@ public class Main implements Initializable {
     }
 
     public void btnProgramStartClick() throws IOException {
-        System.out.println("Wystartuj program");
+        logger.info("Wystartuj program");
         if (queryFiles != null && parametersFile != null && baseList.getSelectionModel().getSelectedItem() != null) {
             startProgramStatus.setText("");
             String property = cfg.getProperties().getProperty("hibernate.connection.url");
-            System.out.println("Link: " + property);
+            logger.info("Link: " + property);
             cfg.buildSessionFactory();
             resultLists = new ArrayList<>();
             scoreQueries(extractParams());
-            System.out.println("Pokaz wyniki");
+            logger.info("Pokaz wyniki");
             for (List<QueryData> resultList : resultLists) {
                 showResults(resultList);
                 ExcelImport.doImport(resultList);
@@ -217,7 +222,7 @@ public class Main implements Initializable {
         JSONArray obj = (JSONArray) jsonParser.parse(reader);
         JsonArray exerciseList = gson.fromJson(obj.toString(), JsonArray.class);
         JsonExtractor jsonExtractor = new JsonExtractor();
-        System.out.println(exerciseList);
+        logger.info(exerciseList);
         return jsonExtractor.extractData(exerciseList);
     }
 
@@ -243,7 +248,7 @@ public class Main implements Initializable {
         queryFiles = null;
         fileNames = new ArrayList<>();
         csvStatus.setText("");
-        System.out.println("Dodaj pliki z zapytaniami");
+        logger.info("Dodaj pliki z zapytaniami");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("json files", "*.json"),
@@ -262,17 +267,17 @@ public class Main implements Initializable {
                 filesSelected.append(name).append("\n");
             }
             csvStatus.setText("Wybranych plików z zapytaniami: " + queryFiles.size());
-            System.out.println("Wybranych plików z zapytaniami: " + queryFiles.size());
+            logger.info("Wybranych plików z zapytaniami: " + queryFiles.size());
         } else {
             csvStatus.setText("Nie wybrano żadnego pliku z zapytaniami");
-            System.out.println("Nie wybrano żadnego pliku z zapytaniami");
+            logger.info("Nie wybrano żadnego pliku z zapytaniami");
         }
     }
 
     public void btnAddParametersClick() {
         parametersFile = null;
         parametersFileStatus.setText("");
-        System.out.println("Dodaj plik z parametrami");
+        logger.info("Dodaj plik z parametrami");
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("json files", "*.json"),
@@ -281,10 +286,10 @@ public class Main implements Initializable {
         parametersFile = fileChooser.showOpenDialog(null);
         if (parametersFile != null) {
             parametersFileStatus.setText("Plik parametrów: " + parametersFile.getName());
-            System.out.println("Plik parametrów: " + parametersFile.getName());
+            logger.info("Plik parametrów: " + parametersFile.getName());
         } else {
             parametersFileStatus.setText("Nie wybrano żadnego pliku z parametrami");
-            System.out.println("Nie wybrano żadnego pliku z parametrami");
+            logger.info("Nie wybrano żadnego pliku z parametrami");
         }
     }
 
@@ -304,16 +309,16 @@ public class Main implements Initializable {
             cfg.getProperties().setProperty("hibernate.connection.driver_class", driver);
             cfg.getProperties().setProperty("hibernate.connection.url", url + queryString);
             cfg.getProperties().setProperty("hibernate.dialect", dialect);
-            System.out.println("Wybrano bazę " + dbName);
+            logger.info("Wybrano bazę " + dbName);
             btnDelete.setVisible(true);
             btnEdit.setVisible(true);
         } else {
-            System.out.println("Nowa baza danych");
+            logger.info("Nowa baza danych");
         }
     }
 
     public void btnEditClick() throws IOException {
-        System.out.println("Edytuj baze");
+        logger.info("Edytuj baze");
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("base.fxml")));
         primaryStage.setTitle("Edytuj bazę danych");
@@ -326,7 +331,7 @@ public class Main implements Initializable {
     }
 
     public void btnDeleteClick() throws IOException {
-        System.out.println("Potwierdź usunięcie");
+        logger.info("Potwierdź usunięcie");
         Stage primaryStage = new Stage();
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("confirm.fxml")));
         primaryStage.setTitle("Usuń bazę");

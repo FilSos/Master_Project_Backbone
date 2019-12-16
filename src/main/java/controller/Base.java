@@ -11,13 +11,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.DbData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.OptionalInt;
+import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import static view.Start.mainController;
@@ -45,12 +50,16 @@ public class Base implements Initializable {
     private boolean isUsed;
 
     private ArrayList<DbData> dbDataList = new ArrayList<>();
+    private static Logger logger = LogManager.getLogger(Base.class);
+
+
 
     public Base() throws URISyntaxException {
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        logger.info("START!");
         dbNameError.setVisible(false);
         dbData.setConverter(new DbDataConverter());
         btnSave.setDisable(false);
@@ -93,7 +102,7 @@ public class Base implements Initializable {
     }
 
     public void btnSaveClick() {
-        System.out.println("Zapisz dane bazy");
+        logger.info("Zapisz dane bazy");
         isUsed = false;
         String dbName = this.dbName.getText();
         ComboBox<model.Base> baseList = mainController.baseList;
@@ -101,11 +110,11 @@ public class Base implements Initializable {
         for (model.Base base : baseListItems) {
             if (base.getName().equals(dbName) && null != mainController.baseList.getSelectionModel().getSelectedItem() && !mainController.baseList.getSelectionModel().getSelectedItem().getName().equals(dbName)) {
                 dbNameError.setVisible(true);
-                System.out.println("Baza o podanej nazwie już istnieje!");
+                logger.info("Baza o podanej nazwie już istnieje!");
                 isUsed = true;
             } else if (base.getName().equals(dbName) && null == mainController.baseList.getSelectionModel().getSelectedItem()) {
                 dbNameError.setVisible(true);
-                System.out.println("Baza o podanej nazwie już istnieje!");
+                logger.info("Baza o podanej nazwie już istnieje!");
                 isUsed = true;
             }
         }
@@ -117,11 +126,11 @@ public class Base implements Initializable {
             String username = this.username.getText();
             String password = this.password.getText();
             String queryString = this.queryString.getText();
-            System.out.println("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" + "Query string: " + queryString + "\n" +
+            logger.info("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" + "Query string: " + queryString + "\n" +
                     "Username: " + username + "\n" + "Password: " + password + "\n" + "Driver: " + driver + "\n" + "Dialect: " + dialect);
 
             if (null == mainController.baseList.getSelectionModel().getSelectedItem()) {
-                System.out.println("Nowa baza");
+                logger.info("Nowa baza");
                 model.Base base = new model.Base();
                 base.setName(dbName);
                 base.setDriver(driver);
@@ -132,7 +141,7 @@ public class Base implements Initializable {
                 base.setQueryString(queryString);
                 mainController.addDbToCombobox(base);
             } else {
-                System.out.println("Istniejąca baza");
+                logger.info("Istniejąca baza");
                 model.Base selectedBase = mainController.baseList.getSelectionModel().getSelectedItem();
                 String oldDbName = selectedBase.getName();
                 selectedBase.setName(dbName);
@@ -158,7 +167,7 @@ public class Base implements Initializable {
                 prop.setProperty("db.queryString", queryString);
 
                 prop.store(output, null);
-                System.out.println(prop);
+                logger.info(prop);
 
             } catch (IOException io) {
                 io.printStackTrace();
