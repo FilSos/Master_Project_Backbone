@@ -24,8 +24,12 @@ public class HibernateUtil {
     // public static final ThreadLocal session = new ThreadLocal();
 
     public static SessionFactory getSessionFactory() {
-        modifyConfiguration(null);
-        return sessionFactory;
+        if (sessionFactory != null) {
+            return sessionFactory;
+        } else {
+            modifyConfiguration(null);
+            return sessionFactory;
+        }
     }
 
     private HibernateUtil() {

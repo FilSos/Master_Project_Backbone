@@ -314,6 +314,8 @@ public class Main implements Initializable {
             cfg.getProperties().setProperty("hibernate.connection.driver_class", driver);
             cfg.getProperties().setProperty("hibernate.connection.url", url + queryString);
             cfg.getProperties().setProperty("hibernate.dialect", dialect);
+            cfg.getProperties().setProperty("hibernate.connection.pool_size", "10");
+            cfg.getProperties().setProperty("hibernate.current_session_context_class", "thread");
             HibernateUtil.modifyConfiguration(cfg);
             logger.info("Wybrano bazę " + dbName);
             btnDelete.setVisible(true);
