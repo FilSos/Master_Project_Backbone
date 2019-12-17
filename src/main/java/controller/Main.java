@@ -74,7 +74,7 @@ public class Main implements Initializable {
     private String programPath = JarPathConverter.getPathToResources();
 
     List<List<QueryData>> resultLists = null;
-    private Configuration cfg;
+    protected Configuration cfg;
 
     public Main() throws URISyntaxException {
     }
@@ -90,7 +90,7 @@ public class Main implements Initializable {
         logger.info("Dodano baze o nazwie: " + base.getName());
     }
 
-    void deleteDbFromCombobox(String dbName){
+    void deleteDbFromCombobox(String dbName) {
         btnDelete.setVisible(false);
         btnEdit.setVisible(false);
         Base selectedItem = baseList.getSelectionModel().getSelectedItem();
@@ -307,12 +307,14 @@ public class Main implements Initializable {
             String url = baseList.getSelectionModel().getSelectedItem().getUrl();
             String queryString = baseList.getSelectionModel().getSelectedItem().getQueryString();
             cfg = new Configuration();
-            cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
+            cfg.addResource("Hibernate.cfg.xml");
+            //cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
             cfg.getProperties().setProperty("hibernate.connection.username", username);
             cfg.getProperties().setProperty("hibernate.connection.password", password);
             cfg.getProperties().setProperty("hibernate.connection.driver_class", driver);
             cfg.getProperties().setProperty("hibernate.connection.url", url + queryString);
             cfg.getProperties().setProperty("hibernate.dialect", dialect);
+            HibernateUtil.modifyConfiguration(cfg);
             logger.info("Wybrano bazę " + dbName);
             btnDelete.setVisible(true);
             btnEdit.setVisible(true);
