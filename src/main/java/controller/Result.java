@@ -15,6 +15,7 @@ import query.QueryData;
 
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class Result implements Initializable {
@@ -27,9 +28,9 @@ public class Result implements Initializable {
     private static TableColumn matchedTables = new TableColumn("Zgodność tabeli");
     private static TableColumn resultMatchScore = new TableColumn("Zgodność z zapytaniem referencyjnym");
     private static TableColumn fragments = new TableColumn("Zgodność fragmentów");
-    private static TableColumn fragment = new TableColumn("Fragment");
-    private static TableColumn overlapCoefficient = new TableColumn("Współczynnik przesunięcia");
-    private static TableColumn jaroWinklerSimilarity = new TableColumn("Odległóść Jaro - Winklera");
+    private static TableColumn<QueryData, List<FragmentValidationResult>> fragment = new TableColumn("Fragment");
+    private static TableColumn<QueryData, List<FragmentValidationResult>> overlapCoefficient = new TableColumn("Współczynnik pokrycia");
+    private static TableColumn<QueryData, List<FragmentValidationResult>> jaroWinklerSimilarity = new TableColumn("Podobieństwo Jaro - Winklera");
     private static TableColumn typos = new TableColumn("Literówki");
     private static TableColumn result = new TableColumn("Poprawność %");
     private static ObservableList<QueryData> items = null;
@@ -64,16 +65,45 @@ public class Result implements Initializable {
         matchedTables.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("matchedTables"));
         resultMatchScore.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("resultMatchScore"));
         //TODO ogarnac wyciaganie danych z listy FragmentValidationResults
-        for (QueryData data : resultList) {
-            if (data.getFragmentValidationResults().size() != 0) {
-                for (FragmentValidationResult result : data.getFragmentValidationResults()) {
-                    fragment.setCellValueFactory(new PropertyValueFactory<CodeFragment, String>("queryFragment"));
-                    overlapCoefficient.setCellValueFactory(new PropertyValueFactory<FragmentValidationResult, Double>("overlapCoefficient"));
-                    jaroWinklerSimilarity.setCellValueFactory(new PropertyValueFactory<FragmentValidationResult, Double>("jaroWinklerSimilarity"));
+        fragment.setCellValueFactory(new PropertyValueFactory<QueryData, List<FragmentValidationResult>>("fragmentValidationResults"));
+        fragment.setCellFactory(col -> new TableCell<QueryData, List<FragmentValidationResult>>() {
+            @Override
+            public void updateItem(List<FragmentValidationResult> fragmentValidationResults, boolean empty) {
+                super.updateItem(fragmentValidationResults, empty);
+                if (empty) {
+                    setText("brak");
+                } else {
+                    setText(fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getFragment().getQueryFragment())
+                            .collect(Collectors.joining(", ")));
                 }
             }
-
-        }
+        });
+        overlapCoefficient.setCellValueFactory(new PropertyValueFactory<QueryData, List<FragmentValidationResult>>("fragmentValidationResults"));
+        overlapCoefficient.setCellFactory(col -> new TableCell<QueryData, List<FragmentValidationResult>>() {
+            @Override
+            public void updateItem(List<FragmentValidationResult> fragmentValidationResults, boolean empty) {
+                super.updateItem(fragmentValidationResults, empty);
+                if (empty) {
+                    setText("brak");
+                } else {
+                    setText(fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getOverlapCoefficient().toString())
+                            .collect(Collectors.joining(", ")));
+                }
+            }
+        });
+        jaroWinklerSimilarity.setCellValueFactory(new PropertyValueFactory<QueryData, List<FragmentValidationResult>>("fragmentValidationResults"));
+        jaroWinklerSimilarity.setCellFactory(col -> new TableCell<QueryData, List<FragmentValidationResult>>() {
+            @Override
+            public void updateItem(List<FragmentValidationResult> fragmentValidationResults, boolean empty) {
+                super.updateItem(fragmentValidationResults, empty);
+                if (empty) {
+                    setText("brak");
+                } else {
+                    setText(fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getJaroWinklerSimilarity().toString())
+                            .collect(Collectors.joining(", ")));
+                }
+            }
+        });
 
         typos.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("typos"));
         result.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("score"));

@@ -37,6 +37,8 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static view.Start.mainController;
+
 public class Main implements Initializable {
 
     @FXML
@@ -160,7 +162,7 @@ public class Main implements Initializable {
         primaryStage.show();
     }
 
-    public void btnProgramStartClick() throws IOException {
+    public void btnProgramStartClick() throws IOException, URISyntaxException {
         logger.info("Wystartuj program");
         if (queryFiles != null && parametersFile != null && baseList.getSelectionModel().getSelectedItem() != null) {
             startProgramStatus.setText("");
@@ -174,7 +176,9 @@ public class Main implements Initializable {
                 showResults(resultList);
                 ExcelImport.doImport(resultList);
             }
-
+            for (String name : fileNames) {
+                logger.info("Created excel for " + name);
+            }
         } else {
             startProgramStatus.setText("Brakuje plików lub nie wybrano bazy!");
         }

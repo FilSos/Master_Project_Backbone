@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,17 +23,17 @@ public class ExcelImport {
 
     private static Logger logger = LogManager.getLogger(ExcelImport.class);
 
-
     private static List<Object[][]> dataRows = null;
 
-    public static void doImport(List<QueryData> resultList) throws IOException {
-        File dir = new File("/wyniki/");
+    public static void doImport(List<QueryData> resultList) throws IOException, URISyntaxException {
+        String programPath = JarPathConverter.getPathToResources();
+        File dir = new File(programPath + "/wyniki/");
         dir.mkdirs();
         dataRows = new ArrayList();
-        String FILE_NAME = "/wyniki/" + resultList.hashCode() + ".xlsx";
+        String FILE_NAME = programPath + "/wyniki/" + resultList.hashCode() + ".xlsx";
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Results");
-        Object[][] columns = {{"Student", "Numer zadania", "Zapytanie", "Czy parsowanie się udało", "Zgodność kolumn", "Zgodność tabeli", "Zgodność z zapytaniem referencyjnym", "Zgodność fragmentów - fragment", "Zgodność fragmentów - współczynnik przesunięcia", "Zgodność fragmentów - odległóść Jaro - Winklera", "Literówki", "Poprawność %"}};
+        Object[][] columns = {{"Student", "Numer zadania", "Zapytanie", "Czy parsowanie się udało", "Zgodność kolumn", "Zgodność tabeli", "Zgodność z zapytaniem referencyjnym", "Zgodność fragmentów - fragment", "Zgodność fragmentów - współczynnik pokrycia", "Zgodność fragmentów - podobieństwo Jaro - Winklera", "Literówki", "Poprawność %"}};
         dataRows.add(columns);
         for (QueryData data : resultList) {
             if (!data.getFragmentValidationResults().isEmpty()) {
@@ -57,9 +58,6 @@ public class ExcelImport {
 
 
         int rowNum = 0;
-        for (String name : mainController.fileNames) {
-            logger.info("Creating excel for " + name);
-        }
         for (Object[][] oneRow : dataRows) {
 
             for (Object[] datatype : oneRow) {
