@@ -1,5 +1,6 @@
 package converter;
 
+import model.FragmentValidationResult;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,7 +17,7 @@ import java.net.URISyntaxException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.stream.Collectors;
 
 
 public class ExcelImport {
@@ -38,11 +39,15 @@ public class ExcelImport {
         dataRows.add(columns);
         for (QueryData data : resultList) {
             if (!data.getFragmentValidationResults().isEmpty()) {
+                List<FragmentValidationResult> fragmentValidationResults = data.getFragmentValidationResults();
+                String fragments = fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getFragment().getQueryFragment())
+                        .collect(Collectors.joining(", "));
+                String jaroWinklerSimilarity = fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getJaroWinklerSimilarity().toString())
+                        .collect(Collectors.joining(", "));
+                String overlapCoefficient = fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getOverlapCoefficient().toString())
+                        .collect(Collectors.joining(", "));
                 Object[][] row = {{data.getIdentifier(), String.valueOf(data.getExNumber()), data.getQueryString(), data.isValid() ? "Tak" : "Nie",
-                        String.valueOf(data.getMatchedColumns()), String.valueOf(data.getMatchedTables()),
-                        String.valueOf(data.getResultMatchScore()), data.getFragmentValidationResults().get(0).getFragment().getQueryFragment(),
-                        String.valueOf(Math.floor(data.getFragmentValidationResults().get(0).getJaroWinklerSimilarity() * 100) / 100),
-                        String.valueOf(Math.floor(data.getFragmentValidationResults().get(0).getOverlapCoefficient() * 100) / 100),
+                        String.valueOf(data.getMatchedColumns()), String.valueOf(data.getMatchedTables()), fragments, jaroWinklerSimilarity, overlapCoefficient,
                         String.valueOf(data.getTypos()), String.valueOf(data.getScore())}};
                 dataRows.add(row);
             } else {

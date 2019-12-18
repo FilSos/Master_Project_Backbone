@@ -64,7 +64,6 @@ public class Result implements Initializable {
         matchedColumns.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("matchedColumns"));
         matchedTables.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("matchedTables"));
         resultMatchScore.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("resultMatchScore"));
-        //TODO ogarnac wyciaganie danych z listy FragmentValidationResults
         fragment.setCellValueFactory(new PropertyValueFactory<QueryData, List<FragmentValidationResult>>("fragmentValidationResults"));
         fragment.setCellFactory(col -> new TableCell<QueryData, List<FragmentValidationResult>>() {
             @Override
