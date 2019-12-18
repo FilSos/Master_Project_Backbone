@@ -166,6 +166,7 @@ public class Main implements Initializable {
     public void btnProgramStartClick() throws IOException, URISyntaxException {
         logger.info("Wystartuj program");
         if (queryFiles != null && parametersFile != null && baseList.getSelectionModel().getSelectedItem() != null) {
+            int fileNameNumber = 0;
             startProgramStatus.setText("");
             HibernateUtil.modifyConfiguration(cfg);
             String property = cfg.getProperties().getProperty("hibernate.connection.url");
@@ -176,8 +177,10 @@ public class Main implements Initializable {
             logger.info("Pokaz wyniki");
             if (!resultLists.isEmpty()) {
                 for (List<QueryData> resultList : resultLists) {
+                    String fileName = fileNames.get(fileNameNumber);
                     showResults(resultList);
-                    ExcelImport.doImport(resultList);
+                    ExcelImport.doImport(resultList, fileName);
+                    fileNameNumber++;
                 }
                 for (String name : fileNames) {
                     logger.info("Created excel for " + name);

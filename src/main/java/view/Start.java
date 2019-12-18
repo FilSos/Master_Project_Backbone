@@ -38,7 +38,7 @@ public class Start extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/main.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("SQLminator - parser for query data");
+        primaryStage.setTitle("SQLminator - parser for query data: ver. " + Main.CURRENT_VERSION + ", " + Main.LAST_CHANGE_DATE);
         //primaryStage.setMaximized(true);
         mainController = loader.getController();
         Scene scene = new Scene(root);

@@ -5,8 +5,8 @@ import org.apache.logging.log4j.Logger;
 
 public class Main {
 
-    private static final String CURRENT_VERSION = "0.91";
-    private static final String LAST_CHANGE_DATE = "17.12.2019 21:51";
+    protected static final String CURRENT_VERSION = "0.91";
+    protected static final String LAST_CHANGE_DATE = "17.12.2019 21:51";
     private static Logger logger = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {

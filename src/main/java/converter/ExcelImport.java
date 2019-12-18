@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static view.Start.mainController;
+
 
 public class ExcelImport {
 
@@ -27,12 +29,12 @@ public class ExcelImport {
 
     private static List<Object[][]> dataRows = null;
 
-    public static void doImport(List<QueryData> resultList) throws IOException, URISyntaxException {
+    public static void doImport(List<QueryData> resultList, String fileName) throws IOException, URISyntaxException {
         String programPath = JarPathConverter.getPathToResources();
         File dir = new File(programPath + "/wyniki/");
         dir.mkdirs();
         dataRows = new ArrayList();
-        String FILE_NAME = programPath + "/wyniki/" + timestamp.getTime() + ".xlsx";
+        String FILE_NAME = programPath + "/wyniki/" + fileName + "_" + timestamp.getTime() + ".xlsx";
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Results");
         Object[][] columns = {{"Student", "Numer zadania", "Zapytanie", "Czy parsowanie się udało", "Zgodność kolumn", "Zgodność tabeli", "Zgodność z zapytaniem referencyjnym", "Zgodność fragmentów - fragment", "Zgodność fragmentów - współczynnik pokrycia", "Zgodność fragmentów - podobieństwo Jaro - Winklera", "Literówki", "Poprawność %"}};
@@ -47,7 +49,7 @@ public class ExcelImport {
                 String overlapCoefficient = fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getOverlapCoefficient().toString())
                         .collect(Collectors.joining(", "));
                 Object[][] row = {{data.getIdentifier(), String.valueOf(data.getExNumber()), data.getQueryString(), data.isValid() ? "Tak" : "Nie",
-                        String.valueOf(data.getMatchedColumns()), String.valueOf(data.getMatchedTables()), fragments, jaroWinklerSimilarity, overlapCoefficient,
+                        String.valueOf(data.getMatchedColumns()), String.valueOf(data.getMatchedTables()), String.valueOf(data.getResultMatchScore()), fragments, jaroWinklerSimilarity, overlapCoefficient,
                         String.valueOf(data.getTypos()), String.valueOf(data.getScore())}};
                 dataRows.add(row);
             } else {
