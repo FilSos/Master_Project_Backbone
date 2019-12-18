@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import converter.ExcelImport;
 import converter.JarPathConverter;
+import converter.PasswordEncryption;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -166,6 +167,7 @@ public class Main implements Initializable {
         logger.info("Wystartuj program");
         if (queryFiles != null && parametersFile != null && baseList.getSelectionModel().getSelectedItem() != null) {
             startProgramStatus.setText("");
+            HibernateUtil.modifyConfiguration(cfg);
             String property = cfg.getProperties().getProperty("hibernate.connection.url");
             logger.info("Link: " + property);
             cfg.buildSessionFactory();
@@ -301,11 +303,12 @@ public class Main implements Initializable {
         }
     }
 
-    public void baseDataClick() {
+    public void baseDataClick() throws Exception {
         if (null != baseList.getSelectionModel().getSelectedItem()) {
             String dbName = baseList.getSelectionModel().getSelectedItem().getName();
             String username = baseList.getSelectionModel().getSelectedItem().getUsername();
             String password = baseList.getSelectionModel().getSelectedItem().getPassword();
+            String decryptedPassword = PasswordEncryption.decryptPassword(password);
             String driver = baseList.getSelectionModel().getSelectedItem().getDriver();
             String dialect = baseList.getSelectionModel().getSelectedItem().getDialect();
             String url = baseList.getSelectionModel().getSelectedItem().getUrl();
@@ -314,13 +317,12 @@ public class Main implements Initializable {
             cfg.addResource("Hibernate.cfg.xml");
             //cfg.configure("Hibernate.cfg.xml"); //hibernate config xml file name
             cfg.getProperties().setProperty("hibernate.connection.username", username);
-            cfg.getProperties().setProperty("hibernate.connection.password", password);
+            cfg.getProperties().setProperty("hibernate.connection.password", decryptedPassword);
             cfg.getProperties().setProperty("hibernate.connection.driver_class", driver);
             cfg.getProperties().setProperty("hibernate.connection.url", url + queryString);
             cfg.getProperties().setProperty("hibernate.dialect", dialect);
             cfg.getProperties().setProperty("hibernate.connection.pool_size", "10");
             cfg.getProperties().setProperty("hibernate.current_session_context_class", "thread");
-            HibernateUtil.modifyConfiguration(cfg);
             logger.info("Wybrano bazę " + dbName);
             btnDelete.setVisible(true);
             btnEdit.setVisible(true);

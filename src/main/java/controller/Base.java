@@ -2,6 +2,7 @@ package controller;
 
 import converter.DbDataConverter;
 import converter.JarPathConverter;
+import converter.PasswordEncryption;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,10 +20,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.OptionalInt;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static view.Start.mainController;
@@ -47,11 +45,12 @@ public class Base implements Initializable {
 
     private String programPath = JarPathConverter.getPathToResources();
 
+    private String encryptedPassword;
+
     private boolean isUsed;
 
     private ArrayList<DbData> dbDataList = new ArrayList<>();
     private static Logger logger = LogManager.getLogger(Base.class);
-
 
 
     public Base() throws URISyntaxException {
@@ -59,7 +58,6 @@ public class Base implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        logger.info("START!");
         dbNameError.setVisible(false);
         dbData.setConverter(new DbDataConverter());
         btnSave.setDisable(false);
@@ -70,6 +68,7 @@ public class Base implements Initializable {
             dbName.setText(selectedBase.getName());
             username.setText(selectedBase.getUsername());
             password.setText(selectedBase.getPassword());
+            encryptedPassword = password.getText();
             OptionalInt indexOpt = IntStream.range(0, dbDataList.size())
                     .filter(i -> selectedBase.getDriver().equals(dbDataList.get(i).getDriver()))
                     .findFirst();
@@ -101,7 +100,7 @@ public class Base implements Initializable {
         return dbDataList;
     }
 
-    public void btnSaveClick() {
+    public void btnSaveClick() throws Exception {
         logger.info("Zapisz dane bazy");
         isUsed = false;
         String dbName = this.dbName.getText();
@@ -125,9 +124,14 @@ public class Base implements Initializable {
             String url = dbData.getSelectionModel().getSelectedItem().getUrl();
             String username = this.username.getText();
             String password = this.password.getText();
+            if (encryptedPassword != null && encryptedPassword.equals(password)) {
+                logger.info("Hasło nie zostało zmienione, szyfrowanie pominięte");
+            } else {
+                encryptedPassword = PasswordEncryption.encryptPassword(password);
+            }
             String queryString = this.queryString.getText();
             logger.info("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" + "Query string: " + queryString + "\n" +
-                    "Username: " + username + "\n" + "Password: " + password + "\n" + "Driver: " + driver + "\n" + "Dialect: " + dialect);
+                    "Username: " + username + "\n" + "Password: " + encryptedPassword + "\n" + "Driver: " + driver + "\n" + "Dialect: " + dialect);
 
             if (null == mainController.baseList.getSelectionModel().getSelectedItem()) {
                 logger.info("Nowa baza");
@@ -137,7 +141,7 @@ public class Base implements Initializable {
                 base.setUrl(url);
                 base.setDialect(dialect);
                 base.setUsername(username);
-                base.setPassword(password);
+                base.setPassword(encryptedPassword);
                 base.setQueryString(queryString);
                 mainController.addDbToCombobox(base);
             } else {
@@ -149,7 +153,7 @@ public class Base implements Initializable {
                 selectedBase.setUrl(url);
                 selectedBase.setDialect(dialect);
                 selectedBase.setUsername(username);
-                selectedBase.setPassword(password);
+                selectedBase.setPassword(encryptedPassword);
                 selectedBase.setQueryString(queryString);
                 mainController.deleteDbFromCombobox(oldDbName);
                 mainController.addDbToCombobox(selectedBase);
@@ -163,7 +167,7 @@ public class Base implements Initializable {
                 prop.setProperty("db.driver", driver);
                 prop.setProperty("db.url", url);
                 prop.setProperty("db.username", username);
-                prop.setProperty("db.password", password);
+                prop.setProperty("db.password", encryptedPassword);
                 prop.setProperty("db.queryString", queryString);
 
                 prop.store(output, null);
