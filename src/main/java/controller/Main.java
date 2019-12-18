@@ -183,6 +183,7 @@ public class Main implements Initializable {
                     logger.info("Created excel for " + name);
                 }
             } else {
+                startProgramStatus.setText("Błąd podczas wykonywania programu, lista wyników jest pusta!");
                 logger.error("Błąd podczas wykonywania programu, lista wyników jest pusta!");
             }
         } else {
