@@ -13,15 +13,16 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import static view.Start.mainController;
 
 
 public class ExcelImport {
 
     private static Logger logger = LogManager.getLogger(ExcelImport.class);
+    private static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     private static List<Object[][]> dataRows = null;
 
@@ -30,7 +31,7 @@ public class ExcelImport {
         File dir = new File(programPath + "/wyniki/");
         dir.mkdirs();
         dataRows = new ArrayList();
-        String FILE_NAME = programPath + "/wyniki/" + resultList.hashCode() + ".xlsx";
+        String FILE_NAME = programPath + "/wyniki/" + timestamp.getTime() + ".xlsx";
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Results");
         Object[][] columns = {{"Student", "Numer zadania", "Zapytanie", "Czy parsowanie się udało", "Zgodność kolumn", "Zgodność tabeli", "Zgodność z zapytaniem referencyjnym", "Zgodność fragmentów - fragment", "Zgodność fragmentów - współczynnik pokrycia", "Zgodność fragmentów - podobieństwo Jaro - Winklera", "Literówki", "Poprawność %"}};
