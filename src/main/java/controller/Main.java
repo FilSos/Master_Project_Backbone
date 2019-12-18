@@ -172,12 +172,16 @@ public class Main implements Initializable {
             resultLists = new ArrayList<>();
             scoreQueries(extractParams());
             logger.info("Pokaz wyniki");
-            for (List<QueryData> resultList : resultLists) {
-                showResults(resultList);
-                ExcelImport.doImport(resultList);
-            }
-            for (String name : fileNames) {
-                logger.info("Created excel for " + name);
+            if (!resultLists.isEmpty()) {
+                for (List<QueryData> resultList : resultLists) {
+                    showResults(resultList);
+                    ExcelImport.doImport(resultList);
+                }
+                for (String name : fileNames) {
+                    logger.info("Created excel for " + name);
+                }
+            }else{
+                logger.error("Błąd podczas wykonywania programu, lista wyników jest pusta!");
             }
         } else {
             startProgramStatus.setText("Brakuje plików lub nie wybrano bazy!");
@@ -193,7 +197,7 @@ public class Main implements Initializable {
         Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getClassLoader().getResource("style.css").toExternalForm());
         primaryStage.setScene(scene);
-        // primaryStage.initModality(Modality.APPLICATION_MODAL);
+        // primaryStage.inictModality(Modality.APPLICATION_MODAL);
         primaryStage.show();
 
     }
