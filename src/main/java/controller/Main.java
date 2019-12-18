@@ -180,7 +180,7 @@ public class Main implements Initializable {
                 for (String name : fileNames) {
                     logger.info("Created excel for " + name);
                 }
-            }else{
+            } else {
                 logger.error("Błąd podczas wykonywania programu, lista wyników jest pusta!");
             }
         } else {
