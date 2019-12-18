@@ -266,6 +266,7 @@ public class Main implements Initializable {
                 new FileChooser.ExtensionFilter("txt files", "*.txt"),
                 new FileChooser.ExtensionFilter("csv files", "*.csv")
         );
+        fileChooser.setInitialDirectory(new File(programPath));
         queryFiles = fileChooser.showOpenMultipleDialog(null);
         if (queryFiles != null) {
             for (File file : queryFiles) {
@@ -294,6 +295,7 @@ public class Main implements Initializable {
                 new FileChooser.ExtensionFilter("json files", "*.json"),
                 new FileChooser.ExtensionFilter("txt files", "*.txt"),
                 new FileChooser.ExtensionFilter("csv files", "*.csv"));
+        fileChooser.setInitialDirectory(new File(programPath));
         parametersFile = fileChooser.showOpenDialog(null);
         if (parametersFile != null) {
             parametersFileStatus.setText("Plik parametrów: " + parametersFile.getName());
