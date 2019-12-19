@@ -131,45 +131,4 @@ public class SqlDissecter {
                 .map(queryData -> queryScorer.evaluate(queryData, parsingParameters.getWeights(), references))
                 .collect(Collectors.toList());
     }
-
-   /* private Map<Boolean, List<QueryData>> printReport(List<QueryData> queries) {
-        QueryData referenceResult = queries.stream()
-                .findFirst()
-                .get();
-
-        Map<Boolean, List<QueryData>> validQueries = queries.stream()
-                .filter(QueryData::isValid)
-                .filter(query -> !query.isRef())
-                .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));
-
-        logger.info("----------------------------REPORT-----------------------------------------------");
-        logger.info("Ref query: " + referenceResult.getQueryString());
-        logger.info("------------------------VALID QUERIES--------------------------------------------");
-        validQueries.forEach((key, value) -> value.forEach(query -> System.out
-                .println("Query " + query.getQueryString() + " Identifier: " + query.getIdentifier() + " isCorrect: " + key)));
-        logger.info("----------------------INVALID QUERIES--------------------------------------------");
-        queries.stream()
-                .filter(queryData -> !queryData.isValid())
-                .forEach(queryData -> logger.info(
-                        "Failed to process query: " + queryData.getQueryString() + " it belongs to: " + queryData.getIdentifier()));
-
-        return queries.stream()
-                .filter(queryData -> !queryData.isRef())
-                .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));
-    }
-
-    /*private List<QueryData> scoreQuery(Map<Boolean, List<QueryData>> queries) {
-        List<QueryData> correct = queries.get(true)
-                .stream()
-                .map(query -> QueryData.newBuilder(query).withScore(100 - (query.getTypos() * 5)).build())
-                .collect(Collectors.toList());
-        List<QueryData> failed = queries.get(false)
-                .stream()
-                .map(query -> QueryData.newBuilder(query).withScore(0).build())
-                .collect(Collectors.toList());
-
-        correct.addAll(failed);
-        return correct;
-    }*/
-
 }
