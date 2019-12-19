@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class SqlDissecter {
 
     private static Logger logger = LogManager.getLogger(SqlDissecter.class);
+    private static String WORD_MATCH_REGEXP_PATTERN = "[a-zA-Z]*%s[a-zA-Z]*";
 
 
     private QueryExecuter queryExecuter = new QueryExecuter();
@@ -103,10 +104,6 @@ public class SqlDissecter {
     }
 
     private QueryData detectTypos(QueryData queryData) {
-        //TODO: needs sth more advanced to check cases like typo SELEC(SELECT)/UPDAT(UPDATE)/SERT(INSERT).
-        // This cases cannot be handled by simple contains. Proposed: split string by spaces and search typos in created that way tokens.
-        // After all fixes, recreate string.
-
         String stringToCheck = queryData.getQueryString().toLowerCase();
         Multimap<String, String> typoMap = parsingParameters.getTyposAsMultimap();
         int numberOfTypos = 0;
@@ -118,7 +115,8 @@ public class SqlDissecter {
                         .findFirst()
                         .get()
                         .getKey();
-                stringToCheck = stringToCheck.replaceAll(typo.toLowerCase(), fixer.toLowerCase());
+
+                stringToCheck = stringToCheck.replaceAll(String.format(WORD_MATCH_REGEXP_PATTERN, typo.toLowerCase()), fixer.toLowerCase());
                 numberOfTypos++;
             }
         }
