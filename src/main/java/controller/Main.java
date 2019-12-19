@@ -66,7 +66,7 @@ public class Main implements Initializable {
     private static Logger logger = LogManager.getLogger(Main.class);
 
 
-    private List<File> queryFiles = null;
+    public List<File> queryFiles = null;
     public ArrayList<String> fileNames = null;
     private File parametersFile = null;
     private JSONParser jsonParser = new JSONParser();
