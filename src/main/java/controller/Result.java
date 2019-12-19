@@ -1,5 +1,6 @@
 package controller;
 
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,7 +18,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-//TODO rozpracować sposób, w którym wyświetlanie się parametrów nie zaburza pracy programu
+//TODO rozpracować sposób, w którym wyświetlanie się parametrów nie zaburza pracy programu(licznik godzin: 4)
 public class Result implements Initializable {
 
     private static TableColumn index = new TableColumn("Student");
@@ -27,10 +28,10 @@ public class Result implements Initializable {
     private static TableColumn matchedColumns = new TableColumn("Zgodność kolumn");
     private static TableColumn matchedTables = new TableColumn("Zgodność tabeli");
     private static TableColumn resultMatchScore = new TableColumn("Zgodność z zapytaniem referencyjnym");
-//    private static TableColumn fragments = new TableColumn("Zgodność fragmentów");
-//    private static TableColumn<QueryData, List<FragmentValidationResult>> fragment = new TableColumn("Fragment");
-//    private static TableColumn<QueryData, List<FragmentValidationResult>> overlapCoefficient = new TableColumn("Współczynnik pokrycia");
-//    private static TableColumn<QueryData, List<FragmentValidationResult>> jaroWinklerSimilarity = new TableColumn("Podobieństwo Jaro - Winklera");
+    private static TableColumn fragments = new TableColumn("Zgodność fragmentów");
+    private static TableColumn<QueryData, String> fragment = new TableColumn("Fragment");
+    private static TableColumn<QueryData, String> overlapCoefficient = new TableColumn("Współczynnik pokrycia");
+    private static TableColumn<QueryData, String> jaroWinklerSimilarity = new TableColumn("Podobieństwo Jaro - Winklera");
     private static TableColumn typos = new TableColumn("Literówki");
     private static TableColumn result = new TableColumn("Poprawność %");
     private static ObservableList<QueryData> items = null;
@@ -43,7 +44,7 @@ public class Result implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         resultList.setEditable(true);
         parsed.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isValid()));
-  //      fragments.getColumns().addAll(fragment, overlapCoefficient, jaroWinklerSimilarity);
+        fragments.getColumns().addAll(fragment, overlapCoefficient, jaroWinklerSimilarity);
         resultList.getColumns().addAll(index, exNumber, queryString, parsed, matchedColumns, matchedTables, resultMatchScore, typos, result);
         this.resultList.setItems(items);
     }
@@ -64,7 +65,40 @@ public class Result implements Initializable {
         matchedColumns.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("matchedColumns"));
         matchedTables.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("matchedTables"));
         resultMatchScore.setCellValueFactory(new PropertyValueFactory<QueryData, Integer>("resultMatchScore"));
-//        fragment.setCellValueFactory(new PropertyValueFactory<QueryData, List<FragmentValidationResult>>("fragmentValidationResults"));
+        fragment.setCellValueFactory(
+                (TableColumn.CellDataFeatures<QueryData, String> data) ->
+                {
+                    List<FragmentValidationResult> fragmentValidationResults = data.getValue().getFragmentValidationResults();
+                    String val = fragmentValidationResults
+                            .stream()
+                            .map(item -> item.getFragment().getQueryFragment())
+                            //.reduce( "", ( acc, item ) -> acc + ", " + item );
+                            .collect(Collectors.joining(", "));
+                    return new ReadOnlyStringWrapper(val);
+                });
+        overlapCoefficient.setCellValueFactory(
+                (TableColumn.CellDataFeatures<QueryData, String> data) ->
+                {
+                    List<FragmentValidationResult> fragmentValidationResults = data.getValue().getFragmentValidationResults();
+                    String val = fragmentValidationResults
+                            .stream()
+                            .map(item -> item.getOverlapCoefficient().toString())
+                            //.reduce( "", ( acc, item ) -> acc + ", " + item );
+                            .collect(Collectors.joining(", "));
+                    return new ReadOnlyStringWrapper(val);
+                });
+        jaroWinklerSimilarity.setCellValueFactory(
+                (TableColumn.CellDataFeatures<QueryData, String> data) ->
+                {
+                    List<FragmentValidationResult> fragmentValidationResults = data.getValue().getFragmentValidationResults();
+                    String val = fragmentValidationResults
+                            .stream()
+                            .map(item -> item.getJaroWinklerSimilarity().toString())
+                            //.reduce( "", ( acc, item ) -> acc + ", " + item );
+                            .collect(Collectors.joining(", "));
+                    return new ReadOnlyStringWrapper(val);
+                });
+
 //        fragment.setCellFactory(col -> new TableCell<QueryData, List<FragmentValidationResult>>() {
 //            @Override
 //            public void updateItem(List<FragmentValidationResult> fragmentValidationResults, boolean empty) {
