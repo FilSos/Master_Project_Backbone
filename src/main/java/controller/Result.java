@@ -24,7 +24,7 @@ public class Result implements Initializable {
     private static TableColumn matchedColumns = new TableColumn("Zgodność kolumn");
     private static TableColumn matchedTables = new TableColumn("Zgodność tabeli");
     private static TableColumn resultMatchScore = new TableColumn("Zgodność z zapytaniem referencyjnym");
-    private static TableColumn fragments = new TableColumn("Zgodność fragmentów");
+    //private static TableColumn fragments = new TableColumn("Zgodność fragmentów");
     private static TableColumn fragment = new TableColumn("Fragment");
     private static TableColumn overlapCoefficient = new TableColumn("Współczynnik pokrycia");
     private static TableColumn jaroWinklerSimilarity = new TableColumn("Podobieństwo Jaro - Winklera");
@@ -40,8 +40,8 @@ public class Result implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         resultList.setEditable(true);
         parsed.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isValid()));
-        fragments.getColumns().addAll(fragment, overlapCoefficient, jaroWinklerSimilarity);
-        resultList.getColumns().addAll(index, exNumber, queryString, parsed, matchedColumns, matchedTables, resultMatchScore, fragments, typos, result);
+        //fragments.getColumns().addAll(fragment, overlapCoefficient, jaroWinklerSimilarity);
+        resultList.getColumns().addAll(index, exNumber, queryString, parsed, matchedColumns, matchedTables, resultMatchScore, fragment, overlapCoefficient, jaroWinklerSimilarity, typos, result);
         this.resultList.setItems(items);
     }
 
