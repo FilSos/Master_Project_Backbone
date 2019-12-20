@@ -39,13 +39,9 @@ public class ExcelExport {
         dataRows.add(columns);
         for (QueryData data : resultList) {
             if (!data.getFragmentValidationResults().isEmpty()) {
-                List<FragmentValidationResult> fragmentValidationResults = data.getFragmentValidationResults();
-                String fragments = fragmentValidationResults.stream().map(fragmentValidationResult -> fragmentValidationResult.getFragment().getQueryFragment())
-                        .collect(Collectors.joining(", "));
-                String overlapCoefficient = fragmentValidationResults.stream().map(fragmentValidationResult -> String.valueOf(Math.floor(fragmentValidationResult.getOverlapCoefficient() * 100) / 100))
-                        .collect(Collectors.joining(", "));
-                String jaroWinklerSimilarity = fragmentValidationResults.stream().map(fragmentValidationResult -> String.valueOf(Math.floor(fragmentValidationResult.getJaroWinklerSimilarity() * 100) / 100))
-                        .collect(Collectors.joining(", "));
+                String fragments = data.getFinalQueryFragments();
+                String overlapCoefficient = data.getFinalOverlapCoefficients();
+                String jaroWinklerSimilarity = data.getFinalJaroWinklerSimilarity();
                 Object[][] row = {{data.getIdentifier(), String.valueOf(data.getExNumber()), data.getQueryString(), data.isValid() ? "Tak" : "Nie",
                         String.valueOf(data.getMatchedColumns()), String.valueOf(data.getMatchedTables()), String.valueOf(data.getResultMatchScore()), fragments, overlapCoefficient, jaroWinklerSimilarity,
                         String.valueOf(data.getTypos()), String.valueOf(data.getScore())}};
