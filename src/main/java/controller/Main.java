@@ -2,7 +2,7 @@ package controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import converter.ExcelImport;
+import converter.ExcelExport;
 import converter.JarPathConverter;
 import converter.PasswordEncryption;
 import javafx.collections.ObservableList;
@@ -37,8 +37,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static view.Start.mainController;
 
 public class Main implements Initializable {
 
@@ -179,7 +177,7 @@ public class Main implements Initializable {
                 for (List<QueryData> resultList : resultLists) {
                     String fileName = fileNames.get(fileNameNumber);
                     showResults(resultList);
-                    ExcelImport.doImport(resultList, fileName);
+                    ExcelExport.doImport(resultList, fileName);
                     fileNameNumber++;
                 }
                 for (String name : fileNames) {
