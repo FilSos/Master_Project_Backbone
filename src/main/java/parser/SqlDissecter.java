@@ -41,8 +41,8 @@ public class SqlDissecter {
                 .map(this::validateQuery)
                 .map(queryData -> queryExecuter.execute(queryData))
                 .collect(Collectors.toList());
-
-        return scoreQuery(executed, references);
+        List<QueryData> scoredQueries = scoreQuery(executed, references);
+        return reformatData(scoredQueries);
     }
 
     private List<QueryData> executeOnDb(List<QueryData> validated) {
@@ -130,5 +130,37 @@ public class SqlDissecter {
         return queries.stream()
                 .map(queryData -> queryScorer.evaluate(queryData, parsingParameters.getWeights(), references))
                 .collect(Collectors.toList());
+    }
+
+    private List<QueryData> reformatData(List<QueryData> scoredQueries) {
+        scoredQueries.forEach(this::setFinalFragmentValidationResults);
+        return scoredQueries;
+    }
+
+    private void setFinalFragmentValidationResults(QueryData queryData) {
+        setFragmentList(queryData);
+        setJaroWinklerSimilarityResults(queryData);
+        setOverlapCoefficientResults(queryData);
+    }
+
+    private void setFragmentList(QueryData queryData) {
+        String fragmentListString = queryData.getFragmentValidationResults().stream()
+                .map(result -> result.getFragment().getName() + " : " + result.getFragment().getQueryFragment())
+                .collect(Collectors.joining(", "));
+        queryData.setFinalQueryFragments(fragmentListString);
+    }
+
+    private void setJaroWinklerSimilarityResults(QueryData queryData) {
+        String jaroSimilarityResults = queryData.getFragmentValidationResults().stream()
+                .map(result -> result.getFragment().getName() + " : " + result.getJaroWinklerSimilarity())
+                .collect(Collectors.joining(", "));
+        queryData.setFinalJaroWinklerSimilarity(jaroSimilarityResults);
+    }
+
+    private void setOverlapCoefficientResults(QueryData queryData) {
+        String overlapCoefficietnsString = queryData.getFragmentValidationResults().stream()
+                .map(result -> result.getFragment().getName() + " : " + result.getOverlapCoefficient())
+                .collect(Collectors.joining(", "));
+        queryData.setFinalOverlapCoefficients(overlapCoefficietnsString);
     }
 }
