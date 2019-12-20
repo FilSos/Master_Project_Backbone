@@ -20,6 +20,9 @@ public class QueryData {
     double matchedTables; //liczba uzytych tabel z pliku parametrow
     double resultMatchScore; //stopien zgodnosci wyniku z zapytaniem referencyjnym
     List<FragmentValidationResult> fragmentValidationResults; //fragmenty ktore zostaly sprawdzone i wyniki poprawnosci
+    String finalQueryFragments; //fragmenty połączone w jednego stringa
+    String finalOverlapCoefficients; //parametr połączony w jednego stringa
+    String finalJaroWinklerSimilarity; //parametr połączony w jednego stringa
     String errorReason; //message z exceptiona ktory polecial jak zapytanie jest niepoprawne
 
     public QueryData(String queryString, String identifier, boolean isRef, int exNumber) {
@@ -185,6 +188,30 @@ public class QueryData {
 
     public void setErrorReason(String errorReason) {
         this.errorReason = errorReason;
+    }
+
+    public String getFinalQueryFragments() {
+        return finalQueryFragments;
+    }
+
+    public void setFinalQueryFragments(String finalQueryFragments) {
+        this.finalQueryFragments = finalQueryFragments;
+    }
+
+    public String getFinalOverlapCoefficients() {
+        return finalOverlapCoefficients;
+    }
+
+    public void setFinalOverlapCoefficients(String finalOverlapCoefficients) {
+        this.finalOverlapCoefficients = finalOverlapCoefficients;
+    }
+
+    public String getFinalJaroWinklerSimilarity() {
+        return finalJaroWinklerSimilarity;
+    }
+
+    public void setFinalJaroWinklerSimilarity(String finalJaroWinklerSimilarity) {
+        this.finalJaroWinklerSimilarity = finalJaroWinklerSimilarity;
     }
 
     public static final class Builder {
