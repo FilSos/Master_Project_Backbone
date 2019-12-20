@@ -152,14 +152,14 @@ public class SqlDissecter {
 
     private void setJaroWinklerSimilarityResults(QueryData queryData) {
         String jaroSimilarityResults = queryData.getFragmentValidationResults().stream()
-                .map(result -> result.getFragment().getName() + " : " + result.getJaroWinklerSimilarity())
+                .map(result -> result.getFragment().getName() + " : " + String.format("%.2f", result.getJaroWinklerSimilarity()))
                 .collect(Collectors.joining(", "));
         queryData.setFinalJaroWinklerSimilarity(jaroSimilarityResults);
     }
 
     private void setOverlapCoefficientResults(QueryData queryData) {
         String overlapCoefficietnsString = queryData.getFragmentValidationResults().stream()
-                .map(result -> result.getFragment().getName() + " : " + result.getOverlapCoefficient())
+                .map(result -> result.getFragment().getName() + " : " + String.format("%.2f", result.getOverlapCoefficient()))
                 .collect(Collectors.joining(", "));
         queryData.setFinalOverlapCoefficients(overlapCoefficietnsString);
     }
