@@ -30,7 +30,7 @@ public class QueryScorer {
         }
         double weightsum = weights.getCodeFragments() + weights.getRefQueries() + weights.getUsedColumns() + weights.getUsedTables();
 
-        finalScore = (finalScore / weightsum) - (queryData.getTypos() * weights.getTypos());
+        finalScore = ((finalScore / weightsum) - (queryData.getTypos() * weights.getTypos())) * 100;
 
         return QueryData.newBuilder(queryData)
                 .withScore(finalScore)
