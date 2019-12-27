@@ -2,8 +2,13 @@ package converter;
 
 import javafx.util.StringConverter;
 import model.DbData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DbDataConverter extends StringConverter<DbData> {
+
+    private static Logger logger = LogManager.getLogger(DbDataConverter.class);
+
 
 
     // Method to convert a DbData-Object to a String
@@ -24,7 +29,7 @@ public class DbDataConverter extends StringConverter<DbData> {
             String dialect = arrayOfWords[3];
             dbData = new DbData(name, driver, url, dialect);
         } else {
-            System.out.println("Obiekt jest pusty!!!");
+            logger.info("Obiekt jest pusty!!!");
         }
         return dbData;
     }

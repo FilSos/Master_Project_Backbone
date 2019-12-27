@@ -4,12 +4,16 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 public class HibernateUtil {
-    private static final SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
-    static {
+    public static void modifyConfiguration(Configuration cfg) {
         try {
             // Session factory creation using the hibernate.cfg.xml file
-            sessionFactory = new Configuration().configure("Hibernate.cfg.xml").buildSessionFactory();
+            if (cfg != null) {
+                sessionFactory = cfg.buildSessionFactory();
+            } else {
+                sessionFactory = new Configuration().configure("Hibernate.cfg.xml").buildSessionFactory();
+            }
         } catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
             System.err.println("Initial SessionFactory creation failed." + ex);
@@ -20,7 +24,12 @@ public class HibernateUtil {
     // public static final ThreadLocal session = new ThreadLocal();
 
     public static SessionFactory getSessionFactory() {
-        return sessionFactory;
+        if (sessionFactory != null) {
+            return sessionFactory;
+        } else {
+            modifyConfiguration(null);
+            return sessionFactory;
+        }
     }
 
     private HibernateUtil() {

@@ -4,11 +4,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static view.Main.mainController;
+import static view.Start.mainController;
 
 public class Confirm implements Initializable {
 
@@ -17,6 +19,9 @@ public class Confirm implements Initializable {
 
     @FXML
     public Button btnNo;
+
+    private static Logger logger = LogManager.getLogger(Confirm.class);
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -28,7 +33,7 @@ public class Confirm implements Initializable {
 
     @FXML
     public void btnYesClick() {
-        System.out.println("Usuń");
+        logger.info("Usuń");
         mainController.deleteDbFromCombobox(null);
         Stage stage = (Stage) btnYes.getScene().getWindow();
         stage.close();
@@ -36,7 +41,7 @@ public class Confirm implements Initializable {
 
     @FXML
     public void btnNoClick() {
-        System.out.println("Nie usuwaj");
+        logger.info("Nie usuwaj");
         Stage stage = (Stage) btnNo.getScene().getWindow();
         stage.close();
     }

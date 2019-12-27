@@ -1,5 +1,8 @@
 package converter;
 
+import model.FragmentValidationResult;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -10,34 +13,37 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.URISyntaxException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static view.Main.mainController;
 
-public class ExcelImport {
+public class ExcelExport {
+
+    private static Logger logger = LogManager.getLogger(ExcelExport.class);
+    private static Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
     private static List<Object[][]> dataRows = null;
 
-    public static void doImport(List<QueryData> resultList) throws IOException {
-        File dir = new File("/wyniki/");
+    public static void doImport(List<QueryData> resultList, String fileName) throws IOException, URISyntaxException {
+        String programPath = JarPathConverter.getPathToResources();
+        File dir = new File(programPath + "/wyniki/");
         dir.mkdirs();
         dataRows = new ArrayList();
-        String FILE_NAME = "/wyniki/" + resultList.hashCode() + ".xlsx";
+        String FILE_NAME = programPath + "/wyniki/" + fileName + "_" + timestamp.getTime() + ".xlsx";
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Results");
-        Object[][] columns = {{"Student", "Numer zadania", "Zapytanie", "Czy parsowanie się udało", "Zgodność kolumn", "Zgodność tabeli", "Zgodność z zapytaniem referencyjnym", "Zgodność fragmentów - fragment", "Zgodność fragmentów - współczynnik przesunięcia", "Zgodność fragmentów - odległóść Jaro - Winklera", "Literówki", "Poprawność %"}};
+        Object[][] columns = {{"Student", "Numer zadania", "Zapytanie", "Czy parsowanie się udało", "Zgodność kolumn", "Zgodność tabeli", "Zgodność z zapytaniem referencyjnym", "Zgodność fragmentów - fragment", "Zgodność fragmentów - współczynnik pokrycia", "Zgodność fragmentów - podobieństwo Jaro - Winklera", "Literówki", "Poprawność %"}};
         dataRows.add(columns);
         for (QueryData data : resultList) {
             if (!data.getFragmentValidationResults().isEmpty()) {
+                String fragments = data.getFinalQueryFragments();
+                String overlapCoefficient = data.getFinalOverlapCoefficients();
+                String jaroWinklerSimilarity = data.getFinalJaroWinklerSimilarity();
                 Object[][] row = {{data.getIdentifier(), String.valueOf(data.getExNumber()), data.getQueryString(), data.isValid() ? "Tak" : "Nie",
-                        String.valueOf(data.getMatchedColumns()), String.valueOf(data.getMatchedTables()),
-                        String.valueOf(data.getResultMatchScore()), data.getFragmentValidationResults().get(0).getFragment().getQueryFragment(),
-                        String.valueOf(Math.floor(data.getFragmentValidationResults().get(0).getJaroWinklerSimilarity() * 100) / 100),
-                        String.valueOf(Math.floor(data.getFragmentValidationResults().get(0).getOverlapCoefficient() * 100) / 100),
+                        String.valueOf(data.getMatchedColumns()), String.valueOf(data.getMatchedTables()), String.valueOf(data.getResultMatchScore()), fragments, overlapCoefficient, jaroWinklerSimilarity,
                         String.valueOf(data.getTypos()), String.valueOf(data.getScore())}};
                 dataRows.add(row);
             } else {
@@ -54,9 +60,6 @@ public class ExcelImport {
 
 
         int rowNum = 0;
-        for (String name : mainController.fileNames) {
-            System.out.println("Creating excel for " + name);
-        }
         for (Object[][] oneRow : dataRows) {
 
             for (Object[] datatype : oneRow) {
@@ -86,6 +89,6 @@ public class ExcelImport {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Zrobione");
+        logger.info("Zrobione");
     }
 }

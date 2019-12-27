@@ -6,12 +6,19 @@ import model.ParsingParameters;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import query.QueryData;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class SqlDissecter {
+
+    private static Logger logger = LogManager.getLogger(SqlDissecter.class);
+    private static String WORD_MATCH_REGEXP_PATTERN = "[a-zA-Z]*%s[a-zA-Z]*";
+
 
     private QueryExecuter queryExecuter = new QueryExecuter();
     private QueryFragmentValidator queryFragmentValidator = new QueryFragmentValidator();
@@ -34,8 +41,8 @@ public class SqlDissecter {
                 .map(this::validateQuery)
                 .map(queryData -> queryExecuter.execute(queryData))
                 .collect(Collectors.toList());
-
-        return scoreQuery(executed, references);
+        List<QueryData> scoredQueries = scoreQuery(executed, references);
+        return reformatData(scoredQueries);
     }
 
     private List<QueryData> executeOnDb(List<QueryData> validated) {
@@ -63,7 +70,7 @@ public class SqlDissecter {
             double tableMatches = tableColumnMatcher.getTableMatches(query, statement);
             double columnsMatches = tableColumnMatcher.getColumnsMatches(query, statement);
 
-            System.out.println("Dobre:" + statement);
+            logger.info("Dobre:" + statement);
             return QueryData.newBuilder(query)
                     .withStatement(statement)
                     .withIsValid(true)
@@ -75,7 +82,7 @@ public class SqlDissecter {
         } catch (JSQLParserException e) {
             String errorMessage = "Error during parsing: " + e.getMessage();
             if (query.getQueryString().trim().equals("-") || query.getQueryString().trim().isEmpty()) {
-                System.out.println("Zadanie puste");
+                logger.error("Zadanie puste");
                 errorMessage = "Error during parsing: No valid query";
             } else {
                 e.printStackTrace();
@@ -97,10 +104,6 @@ public class SqlDissecter {
     }
 
     private QueryData detectTypos(QueryData queryData) {
-        //TODO: needs sth more advanced to check cases like typo SELEC(SELECT)/UPDAT(UPDATE)/SERT(INSERT).
-        // This cases cannot be handled by simple contains. Proposed: split string by spaces and search typos in created that way tokens.
-        // After all fixes, recreate string.
-
         String stringToCheck = queryData.getQueryString().toLowerCase();
         Multimap<String, String> typoMap = parsingParameters.getTyposAsMultimap();
         int numberOfTypos = 0;
@@ -112,7 +115,8 @@ public class SqlDissecter {
                         .findFirst()
                         .get()
                         .getKey();
-                stringToCheck = stringToCheck.replaceAll(typo.toLowerCase(), fixer.toLowerCase());
+
+                stringToCheck = stringToCheck.replaceAll(String.format(WORD_MATCH_REGEXP_PATTERN, typo.toLowerCase()), fixer.toLowerCase());
                 numberOfTypos++;
             }
         }
@@ -128,44 +132,35 @@ public class SqlDissecter {
                 .collect(Collectors.toList());
     }
 
-   /* private Map<Boolean, List<QueryData>> printReport(List<QueryData> queries) {
-        QueryData referenceResult = queries.stream()
-                .findFirst()
-                .get();
-
-        Map<Boolean, List<QueryData>> validQueries = queries.stream()
-                .filter(QueryData::isValid)
-                .filter(query -> !query.isRef())
-                .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));
-
-        System.out.println("----------------------------REPORT-----------------------------------------------");
-        System.out.println("Ref query: " + referenceResult.getQueryString());
-        System.out.println("------------------------VALID QUERIES--------------------------------------------");
-        validQueries.forEach((key, value) -> value.forEach(query -> System.out
-                .println("Query " + query.getQueryString() + " Identifier: " + query.getIdentifier() + " isCorrect: " + key)));
-        System.out.println("----------------------INVALID QUERIES--------------------------------------------");
-        queries.stream()
-                .filter(queryData -> !queryData.isValid())
-                .forEach(queryData -> System.out.println(
-                        "Failed to process query: " + queryData.getQueryString() + " it belongs to: " + queryData.getIdentifier()));
-
-        return queries.stream()
-                .filter(queryData -> !queryData.isRef())
-                .collect(Collectors.partitioningBy(query -> queryExecuter.compareResults(referenceResult.getResult(), query.getResult())));
+    private List<QueryData> reformatData(List<QueryData> scoredQueries) {
+        scoredQueries.forEach(this::setFinalFragmentValidationResults);
+        return scoredQueries;
     }
 
-    /*private List<QueryData> scoreQuery(Map<Boolean, List<QueryData>> queries) {
-        List<QueryData> correct = queries.get(true)
-                .stream()
-                .map(query -> QueryData.newBuilder(query).withScore(100 - (query.getTypos() * 5)).build())
-                .collect(Collectors.toList());
-        List<QueryData> failed = queries.get(false)
-                .stream()
-                .map(query -> QueryData.newBuilder(query).withScore(0).build())
-                .collect(Collectors.toList());
+    private void setFinalFragmentValidationResults(QueryData queryData) {
+        setFragmentList(queryData);
+        setJaroWinklerSimilarityResults(queryData);
+        setOverlapCoefficientResults(queryData);
+    }
 
-        correct.addAll(failed);
-        return correct;
-    }*/
+    private void setFragmentList(QueryData queryData) {
+        String fragmentListString = queryData.getFragmentValidationResults().stream()
+                .map(result -> result.getFragment().getName() + " : " + result.getFragment().getQueryFragment())
+                .collect(Collectors.joining(", "));
+        queryData.setFinalQueryFragments(fragmentListString);
+    }
 
+    private void setJaroWinklerSimilarityResults(QueryData queryData) {
+        String jaroSimilarityResults = queryData.getFragmentValidationResults().stream()
+                .map(result -> result.getFragment().getName() + " : " + String.format("%.2f", result.getJaroWinklerSimilarity()))
+                .collect(Collectors.joining(", "));
+        queryData.setFinalJaroWinklerSimilarity(jaroSimilarityResults);
+    }
+
+    private void setOverlapCoefficientResults(QueryData queryData) {
+        String overlapCoefficietnsString = queryData.getFragmentValidationResults().stream()
+                .map(result -> result.getFragment().getName() + " : " + String.format("%.2f", result.getOverlapCoefficient()))
+                .collect(Collectors.joining(", "));
+        queryData.setFinalOverlapCoefficients(overlapCoefficietnsString);
+    }
 }

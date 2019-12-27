@@ -1,6 +1,8 @@
 package controller;
 
 import converter.DbDataConverter;
+import converter.JarPathConverter;
+import converter.PasswordEncryption;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,15 +12,18 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.DbData;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.stream.IntStream;
 
-import static view.Main.mainController;
+import static view.Start.mainController;
 
 
 public class Base implements Initializable {
@@ -38,9 +43,18 @@ public class Base implements Initializable {
     @FXML
     public Label dbNameError;
 
+    private String programPath = JarPathConverter.getPathToResources();
+
+    private String encryptedPassword;
+
     private boolean isUsed;
 
     private ArrayList<DbData> dbDataList = new ArrayList<>();
+    private static Logger logger = LogManager.getLogger(Base.class);
+
+
+    public Base() throws URISyntaxException {
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -54,6 +68,7 @@ public class Base implements Initializable {
             dbName.setText(selectedBase.getName());
             username.setText(selectedBase.getUsername());
             password.setText(selectedBase.getPassword());
+            encryptedPassword = password.getText();
             OptionalInt indexOpt = IntStream.range(0, dbDataList.size())
                     .filter(i -> selectedBase.getDriver().equals(dbDataList.get(i).getDriver()))
                     .findFirst();
@@ -85,8 +100,8 @@ public class Base implements Initializable {
         return dbDataList;
     }
 
-    public void btnSaveClick() {
-        System.out.println("Zapisz dane bazy");
+    public void btnSaveClick() throws Exception {
+        logger.info("Zapisz dane bazy");
         isUsed = false;
         String dbName = this.dbName.getText();
         ComboBox<model.Base> baseList = mainController.baseList;
@@ -94,11 +109,11 @@ public class Base implements Initializable {
         for (model.Base base : baseListItems) {
             if (base.getName().equals(dbName) && null != mainController.baseList.getSelectionModel().getSelectedItem() && !mainController.baseList.getSelectionModel().getSelectedItem().getName().equals(dbName)) {
                 dbNameError.setVisible(true);
-                System.out.println("Baza o podanej nazwie już istnieje!");
+                logger.info("Baza o podanej nazwie już istnieje!");
                 isUsed = true;
             } else if (base.getName().equals(dbName) && null == mainController.baseList.getSelectionModel().getSelectedItem()) {
                 dbNameError.setVisible(true);
-                System.out.println("Baza o podanej nazwie już istnieje!");
+                logger.info("Baza o podanej nazwie już istnieje!");
                 isUsed = true;
             }
         }
@@ -109,23 +124,28 @@ public class Base implements Initializable {
             String url = dbData.getSelectionModel().getSelectedItem().getUrl();
             String username = this.username.getText();
             String password = this.password.getText();
+            if (encryptedPassword != null && encryptedPassword.equals(password)) {
+                logger.info("Hasło nie zostało zmienione, szyfrowanie pominięte");
+            } else {
+                encryptedPassword = PasswordEncryption.encryptPassword(password);
+            }
             String queryString = this.queryString.getText();
-            System.out.println("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" + "Query string: " + queryString + "\n" +
-                    "Username: " + username + "\n" + "Password: " + password + "\n" + "Driver: " + driver + "\n" + "Dialect: " + dialect);
+            logger.info("Show values: " + "\n" + "DB Name: " + dbName + "\n" + "Url: " + url + "\n" + "Query string: " + queryString + "\n" +
+                    "Username: " + username + "\n" + "Password: " + encryptedPassword + "\n" + "Driver: " + driver + "\n" + "Dialect: " + dialect);
 
             if (null == mainController.baseList.getSelectionModel().getSelectedItem()) {
-                System.out.println("Nowa baza");
+                logger.info("Nowa baza");
                 model.Base base = new model.Base();
                 base.setName(dbName);
                 base.setDriver(driver);
                 base.setUrl(url);
                 base.setDialect(dialect);
                 base.setUsername(username);
-                base.setPassword(password);
+                base.setPassword(encryptedPassword);
                 base.setQueryString(queryString);
                 mainController.addDbToCombobox(base);
             } else {
-                System.out.println("Istniejąca baza");
+                logger.info("Istniejąca baza");
                 model.Base selectedBase = mainController.baseList.getSelectionModel().getSelectedItem();
                 String oldDbName = selectedBase.getName();
                 selectedBase.setName(dbName);
@@ -133,24 +153,25 @@ public class Base implements Initializable {
                 selectedBase.setUrl(url);
                 selectedBase.setDialect(dialect);
                 selectedBase.setUsername(username);
-                selectedBase.setPassword(password);
+                selectedBase.setPassword(encryptedPassword);
                 selectedBase.setQueryString(queryString);
                 mainController.deleteDbFromCombobox(oldDbName);
                 mainController.addDbToCombobox(selectedBase);
 
             }
 
-            try (OutputStream output = new FileOutputStream("src/main/resources/" + dbName + ".properties")) {
+            try (OutputStream output = new FileOutputStream(programPath + "/" + dbName + ".properties")) {
                 Properties prop = new Properties();
                 prop.setProperty("db.name", dbName);
                 prop.setProperty("db.dialect", dialect);
                 prop.setProperty("db.driver", driver);
-                prop.setProperty("db.url", url + queryString);
+                prop.setProperty("db.url", url);
                 prop.setProperty("db.username", username);
-                prop.setProperty("db.password", password);
+                prop.setProperty("db.password", encryptedPassword);
+                prop.setProperty("db.queryString", queryString);
 
                 prop.store(output, null);
-                System.out.println(prop);
+                logger.info(prop);
 
             } catch (IOException io) {
                 io.printStackTrace();
