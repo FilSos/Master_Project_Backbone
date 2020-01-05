@@ -28,7 +28,9 @@ public class QueryScorer {
                 referenceMatchScore = 1;
             }
         }
-        finalScore = Math.round(((finalScore / 4) - (queryData.getTypos() * weights.getTypos())) * 100);
+        double weightsum = weights.getCodeFragments() + weights.getRefQueries() + weights.getUsedColumns() + weights.getUsedTables();
+
+        finalScore = ((finalScore / weightsum) - (queryData.getTypos() * weights.getTypos())) * 100;
 
         return QueryData.newBuilder(queryData)
                 .withScore(finalScore)

@@ -3,6 +3,8 @@ package controller;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import static view.Start.mainController;
+
 public class HibernateUtil {
     private static SessionFactory sessionFactory;
 
@@ -17,6 +19,7 @@ public class HibernateUtil {
         } catch (Throwable ex) {
             // Make sure you log the exception, as it might be swallowed
             System.err.println("Initial SessionFactory creation failed." + ex);
+            mainController.startProgramStatus.setText("Wystąpił błąd w programie." + "\nSprawdź login i hasło oraz dostęp do bazy danych.");
             throw new ExceptionInInitializerError(ex);
         }
     }
