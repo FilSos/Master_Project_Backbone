@@ -269,7 +269,7 @@ public class QueryData {
         }
 
         public Builder withScore(Double val) {
-            score = val;
+            score = Math.floor(val * 100) / 100;
             return this;
         }
 
@@ -284,17 +284,17 @@ public class QueryData {
         }
 
         public Builder withColumnMatched(double val) {
-            matchedColumns = val;
+            matchedColumns = Math.floor(val * 100) / 100;
             return this;
         }
 
         public Builder withTableMatched(double val) {
-            matchedTables = val;
+            matchedTables = Math.floor(val * 100) / 100;
             return this;
         }
 
         public Builder withResultMatchScore(double val) {
-            resultMatchScore = val;
+            resultMatchScore = Math.floor(val * 100) / 100;
             return this;
         }
 
