@@ -1,5 +1,6 @@
 package parser;
 
+import com.google.gson.Gson;
 import model.FragmentValidationResult;
 import model.Weights;
 import query.QueryData;
@@ -10,6 +11,7 @@ import java.util.Optional;
 public class QueryScorer {
 
     QueryExecuter queryExecuter = new QueryExecuter();
+    QueryFragmentValidator queryFragmentValidator = new QueryFragmentValidator();
 
     public QueryData evaluate(QueryData queryData, Weights weights, List<QueryData> references) {
 
@@ -26,6 +28,12 @@ public class QueryScorer {
             if (queryExecuter.compareResults(refData.get().getResult(), queryData.getResult())) {
                 finalScore += 1 * weights.getRefQueries();
                 referenceMatchScore = 1;
+            } else {
+                Gson gson = new Gson();
+                String result1 = gson.toJson(refData.get().getResult());
+                String result2 = gson.toJson(queryData.getResult());
+                referenceMatchScore = queryFragmentValidator.calculateResultSimilarity(result1, result2);
+                finalScore += referenceMatchScore * weights.getRefQueries();
             }
         }
         double weightsum = weights.getCodeFragments() + weights.getRefQueries() + weights.getUsedColumns() + weights.getUsedTables();

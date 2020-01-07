@@ -20,11 +20,22 @@ public class QueryFragmentValidator {
 
 
     public FragmentValidationResult checkSimilarity(CodeFragment fragment, String query) {
+        if (query.toLowerCase().contains(fragment.getQueryFragment().toLowerCase())) {
+            return new FragmentValidationResult(fragment, 1.0, 1.0);
+        }
         intersectionSimilarity = new IntersectionSimilarity<>(charSequenceCollectionFunction);
         Double jaroWinkler = jaroWinklerSimilarity.apply(fragment.getQueryFragment().toLowerCase(), query);
         IntersectionResult intersectionResult = intersectionSimilarity.apply(fragment.getQueryFragment().toLowerCase(), query);
         double overlapCoefficient = calculateOverlapCoefficient(intersectionResult);
         return new FragmentValidationResult(fragment, overlapCoefficient, jaroWinkler);
+    }
+
+    public double calculateResultSimilarity(String result1, String result2) {
+        intersectionSimilarity = new IntersectionSimilarity<>(cs -> Arrays.asList(cs.toString().toLowerCase().trim().split("\\s")));
+        Double jarowinkler = jaroWinklerSimilarity.apply(result1, result2);
+        IntersectionResult intersectionResult = intersectionSimilarity.apply(result1, result2);
+        double overlapCoefficient = calculateOverlapCoefficient(intersectionResult);
+        return (jarowinkler + overlapCoefficient) / 2;
     }
 
     private double calculateOverlapCoefficient(IntersectionResult intersectionResult) {
@@ -45,5 +56,6 @@ public class QueryFragmentValidator {
 
         return Arrays.asList(initialString.split("\\s"));
     };
+
 
 }
